@@ -121,7 +121,7 @@
                 <div class="key white" data-piano-code="B5" data-keyboard-key="5"></div>
                 <div class="key white" data-piano-code="C6" data-keyboard-key="6"></div>
             </div>
-            <div class="piano_wrapper">
+            <div class="piano_wrapper" tabindex="0">
                 <div class="piano" id="piano">
                     <div class="keys" id="keys">
                         <div class="key white" data-piano-code="C4" data-keyboard-key="a"></div>
@@ -215,7 +215,7 @@
         function get_key_el(note) {
             return document.querySelector('.keys .key[data-piano-code="' + note + '"]');
         }
-        window.addEventListener("keydown", function (e) {
+        document.querySelector('.piano_wrapper').addEventListener("keydown", function (e) {
             e.preventDefault();
             if (!keyboards2.includes(e.key)) {
                 return false;
@@ -242,7 +242,7 @@
             e.preventDefault();
         });
 
-        window.addEventListener("keyup", function (e) {
+        document.querySelector('.piano_wrapper').addEventListener("keyup", function (e) {
             if (!keyboards2.includes(e.key)) {
                 return false;
             }
