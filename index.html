@@ -90,6 +90,10 @@
 <body>
     <div class="body enablepopover">
         <div class="music" id="music">
+            <div class="input-group">
+                <input type="text" name="img" id="img" placeholder="background image">
+                <button class="btn btn-primary" id="setimg">set bg image</button>
+            </div>
             <div class="sheet loading" id="sheet">
                 <div class="key white" data-piano-code="C4" data-keyboard-key="a"></div>
                 <div class="key black" data-piano-code="C#4" data-keyboard-key="w"></div>
@@ -152,6 +156,7 @@
         </div>
     </div>
     <script>
+        var cgrcssjs = new ColourgreyShorterJS.ColourgreyShorterCSS(false);
         var Urobot2011MIDIPlayerJS = Urobot2011MIDIPlayerJS;
         var instrument;
         var loadFile, loadDataUri, Player;
@@ -396,10 +401,14 @@
             }
             document.querySelector('.sheet').classList.remove('loading');
         });
+        document.getElementById("setimg").addEventListener("click", function (ev) {
+            document.querySelector('.sheet').style.backgroundImage = `url(${document.getElementById('img').value})`;
+        });
         window.addEventListener("DOMContentLoaded", function (ev) {
             document.querySelector('.piano').style.setProperty('--scaleX', window.innerWidth / document.querySelector('.piano_wrapper').clientWidth);
             document.querySelector('.piano').style.setProperty('--new-width', document.querySelector('.piano_wrapper').clientWidth + 'px');
-        })
+        });
+        cgrcssjs.styleAll();
     </script>
 </body>
 
