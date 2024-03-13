@@ -93,6 +93,7 @@
             <div class="input-group">
                 <input type="text" name="img" id="img" placeholder="background image">
                 <button class="btn btn-primary" id="setimg">set bg image</button>
+                <input type="checkbox" id="octave_1">
             </div>
             <div class="sheet loading" id="sheet">
                 <div class="key white" data-piano-code="C4" data-keyboard-key="a"></div>
@@ -172,6 +173,7 @@
         var tempo = 50;
         var keynotes = scalekeys;
         var notelengths = [];
+        var octave_1=document.getElementById("octave_1");
         var _whites = 0;
         var _black_and_white = document.querySelectorAll(`.keys .key[data-piano-code][data-keyboard-key]`);
         _black_and_white.forEach(function (val, idx, arr) {
@@ -222,6 +224,9 @@
             }
             var key = notetonote(keyboardtonote(e.key));
             key = keyboardtonote(e.key);
+            if (octave_1.checked===true){
+                key=key.replace('5','6').replace('4','5');
+            }
             if (currKeys.includes(key) || currKeys2[key]) {
                 return;
             }
@@ -248,6 +253,9 @@
             }
             var key = notetonote(keyboardtonote(e.key));
             key = keyboardtonote(e.key);
+            if (octave_1.checked===true){
+                key=key.replace('5','6').replace('4','5');
+            }
             bool2 = true;
             currKeys.splice(currKeys.indexOf(key));
             console.log(notetonumber(key));
