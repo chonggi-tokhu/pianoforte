@@ -94,6 +94,9 @@
                 <input type="text" name="img" id="img" placeholder="background image">
                 <button class="btn btn-primary" id="setimg">set bg image</button>
                 <input type="checkbox" id="octave_1">
+                <label for="octave_1">asdf</label>
+                <input type="file" id="file" value="file upload...">
+                <button class="btn btn-primary" id="setfile">set bg image</button>
             </div>
             <div class="sheet loading" id="sheet">
                 <div class="key white" data-piano-code="C4" data-keyboard-key="a"></div>
@@ -380,7 +383,7 @@
 
             loadFile = function () {
                 Player.stop();
-                var file = document.querySelector('input[type=file]').files[0];
+                var file = document.querySelector('input[type=file]#file').files[0];
                 var reader = new FileReader();
                 if (file) reader.readAsArrayBuffer(file);
                 reader.addEventListener("load", function () {
@@ -417,6 +420,7 @@
             document.querySelector('.piano').style.setProperty('--scaleX', window.innerWidth / document.querySelector('.piano_wrapper').clientWidth);
             document.querySelector('.piano').style.setProperty('--new-width', document.querySelector('.piano_wrapper').clientWidth + 'px');
         });
+        document.getEl_Id("setfile").addEventListener("click",loadFile);
         cgrcssjs.styleAll();
     </script>
 </body>
