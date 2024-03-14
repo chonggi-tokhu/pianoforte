@@ -436,7 +436,7 @@ var lesson_mode = function (event) {
                 if (file) reader.readAsArrayBuffer(file);
                 reader.addEventListener("load", function () {
                     bool1 = 0;
-                    Player = new var MidiPlayer.Player(function (event) {
+                    Player = new MidiPlayer.Player(function (event) {
                         playmidi(event);
                         lesson_mode(event);
                     });
