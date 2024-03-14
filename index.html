@@ -468,7 +468,10 @@ var lesson_mode = function (event) {
             document.querySelector('.piano').style.setProperty('--scaleX', window.innerWidth / document.querySelector('.piano_wrapper').clientWidth);
             document.querySelector('.piano').style.setProperty('--new-width', document.querySelector('.piano_wrapper').clientWidth + 'px');
         });
-        document.getEl_Id("setfile").addEventListener("click",loadFile);
+	    function returnloadfile(){
+		    return loadFile;
+	    }
+        document.getEl_Id("setfile").addEventListener("click",returnloadfile());
         cgrcssjs.styleAll();
     </script>
 </body>
