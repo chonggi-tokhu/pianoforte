@@ -8,6 +8,8 @@
     <script src="./midijs/midiplayer.js"></script>
     <script src="./soundfont-player-js/player.js"></script>
     <script src="https://code.jquery.com/jquery-3.6.3.js"></script>
+	<script src='https://urobot2011.github.io/Kalimba-sheet-music-writer/lib/midiplayer.js'></script>
+	<script src='https://urobot2011.github.io/Kalimba-sheet-music-writer/lib/soundfont-player.min.js'></script>
     <script
         src="https://chonggi-tokhu.github.io/svg_to_video/google_translate_meme_maker/ColourgreyShorterCSSJS.js"></script>
     <link rel="stylesheet"
@@ -162,7 +164,7 @@
     </div>
     <script>
         var cgrcssjs = new ColourgreyShorterJS.ColourgreyShorterCSS(false);
-        var Urobot2011MIDIPlayerJS = Urobot2011MIDIPlayerJS;
+	    var MidiPlayer = MidiPlayer;
         var instrument;
         var loadFile, loadDataUri, Player;
         var AudioContext = window.AudioContext || window.webkitAudioContext || false;
@@ -434,7 +436,7 @@ var lesson_mode = function (event) {
                 if (file) reader.readAsArrayBuffer(file);
                 reader.addEventListener("load", function () {
                     bool1 = 0;
-                    Player = new Urobot2011MIDIPlayerJS.Player(function (event) {
+                    Player = new var MidiPlayer.Player(function (event) {
                         playmidi(event);
                         lesson_mode(event);
                     });
