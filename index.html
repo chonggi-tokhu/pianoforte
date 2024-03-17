@@ -15,7 +15,7 @@
     <style>
         :root {
             --sum-2-left: 1;
-            --old-width: calc((54em) / 0.787);
+            --old-width: calc((59em) / 0.787);
         }
 
         .keys {
@@ -84,6 +84,9 @@
         .black.highlight {
             background: #204070 !important;
         }
+        .guest_profile img[src=''] {
+            display:none;
+        }
     </style>
 </head>
 
@@ -95,6 +98,9 @@
                 <button class="btn btn-primary" id="setimg">set bg image</button>
                 <input type="checkbox" id="chaco"><label for="chaco">차커(차들어커피야) 전용 모드</label>
             </div>
+                <div class="guest_profile_wrapper" style="position:absolute;text-align:center;">
+                    <a><p class="guest_profile"><img width="350"></p></a>
+                </div>
             <div class="sheet loading" id="sheet">
                 <!--<div class="key white" data-piano-code="C4" data-keyboard-key="a"></div>
                 <div class="key black" data-piano-code="C#4" data-keyboard-key="w"></div>
@@ -187,6 +193,7 @@
         var notelengths = [];
         var _whites = 0;
         var forchaco = document.getElementById("chaco");
+        var guest_profile = document.getElementById("guest_profile");
         var _black_and_white = document.querySelectorAll(`.keys .key[data-piano-code][data-keyboard-key]`);
         _black_and_white.forEach(function (val, idx, arr) {
             if (val.classList.contains("black")) {
@@ -430,18 +437,20 @@
         });
         forchaco.addEventListener("change",function(ev){
             if (forchaco.checked){
-                setBG('https://yt3.googleusercontent.com/ytc/AIdro_nkqBgHYalGfrq-BV9y5kRmb1Wuq-Tdx6sOocYcQA=s176-c-k-c0x00ffffff-no-rj');
+                /*setBG('https://yt3.googleusercontent.com/ytc/AIdro_nkqBgHYalGfrq-BV9y5kRmb1Wuq-Tdx6sOocYcQA=s176-c-k-c0x00ffffff-no-rj');
                 document.querySelector('.sheet').style.backgroundSize='30%';
                 document.querySelector('.sheet').style.backgroundPosition='35%';
                 document.querySelector('.sheet').style.backgroundColor='#2f3e4d';
-                document.querySelector('.sheet').style.backgroundRepeat='no-repeat';
+                document.querySelector('.sheet').style.backgroundRepeat='no-repeat';*/
+                document.querySelector('.guest_profile img').setAttribute('src','https://yt3.googleusercontent.com/ytc/AIdro_nkqBgHYalGfrq-BV9y5kRmb1Wuq-Tdx6sOocYcQA=s176-c-k-c0x00ffffff-no-rj');
             } else {
-                setBG(false);
+                /*setBG(false);
                 document.querySelector('.sheet').style.backGroundSize='';
                 document.querySelector('.sheet').style.backgroundSize='';
                 document.querySelector('.sheet').style.backgroundPosition='';
                 document.querySelector('.sheet').style.backgroundColor='';
-                document.querySelector('.sheet').style.backgroundRepeat='';
+                document.querySelector('.sheet').style.backgroundRepeat='';*/
+                document.querySelector('.guest_profile img').setAttribute('src','');
             }
         });
         cgrcssjs.styleAll();
