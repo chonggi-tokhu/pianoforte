@@ -93,7 +93,7 @@
             <div class="input-group">
                 <input type="text" name="img" id="img" placeholder="background image">
                 <button class="btn btn-primary" id="setimg">set bg image</button>
-                <input type="checkbox" id="octave_1">
+                <input type="checkbox" id="chaco"><label for="chaco">차커(차들어커피야) 전용 모드</label>
             </div>
             <div class="sheet loading" id="sheet">
                 <!--<div class="key white" data-piano-code="C4" data-keyboard-key="a"></div>
@@ -185,8 +185,8 @@
         var tempo = 50;
         var keynotes = scalekeys;
         var notelengths = [];
-        var octave_1=document.getElementById("octave_1");
         var _whites = 0;
+        var forchaco = document.getElementById("chaco");
         var _black_and_white = document.querySelectorAll(`.keys .key[data-piano-code][data-keyboard-key]`);
         _black_and_white.forEach(function (val, idx, arr) {
             if (val.classList.contains("black")) {
@@ -235,9 +235,6 @@
                 return false;
             }
             var key = keyboardtonote(e.key);
-            if (octave_1.checked===true){
-                key=key.replace('5','6').replace('4','5');
-            }
             if (currKeys.includes(key) || currKeys2[key]) {
                 return;
             }
@@ -264,9 +261,6 @@
             }
             var key = notetonote(keyboardtonote(e.key));
             key = keyboardtonote(e.key);
-            if (octave_1.checked===true){
-                key=key.replace('5','6').replace('4','5');
-            }
             bool2 = true;
             currKeys.splice(currKeys.indexOf(key));
             console.log(notetonumber(key));
@@ -420,12 +414,28 @@
             }
             document.querySelector('.sheet').classList.remove('loading');
         });
+        function setBG(link){
+            if (link === false){
+                
+            document.querySelector('.sheet').style.backgroundImage = ``;}
+            }
+            document.querySelector('.sheet').style.backgroundImage = `url(${link})`;}
         document.getElementById("setimg").addEventListener("click", function (ev) {
-            document.querySelector('.sheet').style.backgroundImage = `url(${document.getElementById('img').value})`;
+            //document.querySelector('.sheet').style.backgroundImage = `url(${document.getElementById('img').value})`;
+            setBG(document.getElementById('img').value);
         });
         window.addEventListener("DOMContentLoaded", function (ev) {
             document.querySelector('.piano').style.setProperty('--scaleX', window.innerWidth / document.querySelector('.piano_wrapper').clientWidth);
             document.querySelector('.piano').style.setProperty('--new-width', document.querySelector('.piano_wrapper').clientWidth + 'px');
+        });
+        forchaco.addEventListener("change",function(ev){
+            if (forchaco.checked){
+                setBG('https://yt3.googleusercontent.com/ytc/AIdro_nkqBgHYalGfrq-BV9y5kRmb1Wuq-Tdx6sOocYcQA=s176-c-k-c0x00ffffff-no-rj');
+                document.querySelector('.sheet').style.backgroundSize='70%';
+            } else {
+                setBG(false);
+                document.querySelector('.sheet').style.backGroundSize='100%';
+            }
         });
         cgrcssjs.styleAll();
     </script>
