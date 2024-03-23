@@ -424,10 +424,10 @@
         });
         function setBG(link){
             if (link === false){
-                
-            document.querySelector('.sheet').style.backgroundImage = ``;
+                document.querySelector('.sheet').style.backgroundImage = ``;
             }
-            document.querySelector('.sheet').style.backgroundImage = `url(${link})`;}
+            document.querySelector('.sheet').style.backgroundImage = `url('${link}')`;
+        }
         document.getElementById("setimg").addEventListener("click", function (ev) {
             //document.querySelector('.sheet').style.backgroundImage = `url(${document.getElementById('img').value})`;
             setBG(document.getElementById('img').value);
