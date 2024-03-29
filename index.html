@@ -263,10 +263,6 @@
             /*console.log(a);*/
             bool2 = false;
             currKeys2[key] = a.id;
-            if (e.key == ' ') {
-                pedal = 1;
-                return;
-            }
             get_key_el(key).classList.add("highlight");
             e.preventDefault();
         });
@@ -284,10 +280,6 @@
             instrument.stop(0, [currKeys2[key]]);
             currKeys2[key] = false;
             get_key_el(key).classList.remove("highlight");
-            if (e.key == ' ') {
-                pedal = 0;
-                return;
-            }
         });
 
         var keyboards2 = [" ","ArrowLeft", "ArrowRight","0","z","x","c","v","b","n","m",",",".","/","1","2","a", "s", "d", "f", "g", "h", "j", "k", "l", ";", "'", "Enter", "4", "5", "6", "+", "w", "e", "t", "y", "u", "o", "p", "]", "\\", "7", "9"];
