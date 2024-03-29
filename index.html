@@ -138,8 +138,8 @@
                         <div class="key white" data-piano-code="D3" data-keyboard-key="c"></div>
                         <div class="key black" data-piano-code="D#3" data-keyboard-key="v"></div>
                         <div class="key white" data-piano-code="E3" data-keyboard-key="b"></div>-->
-                        <div class="key white" data-piano-code="C3" data-keyboard-key="ArrowRight"></div>
-                        <div class="key black" data-piano-code="C#3" data-keyboard-key="0"></div>
+                        <div class="key white" data-piano-code="C3" data-keyboard-key=" "></div>
+                        <div class="key black" data-piano-code="C#3" data-keyboard-key="ArrowLeft"></div>
                         <div class="key white" data-piano-code="D3" data-keyboard-key="z"></div>
                         <div class="key black" data-piano-code="D#3" data-keyboard-key="x"></div>
                         <div class="key white" data-piano-code="E3" data-keyboard-key="c"></div>
@@ -290,7 +290,7 @@
             }
         });
 
-        var keyboards2 = ["ArrowRight","0","z","x","c","v","b","n","m",",",".","/","1","2","a", "s", "d", "f", "g", "h", "j", "k", "l", ";", "'", "Enter", "4", "5", "6", "+", "w", "e", "t", "y", "u", "o", "p", "]", "\\", "7", "9"];
+        var keyboards2 = [" ","ArrowLeft", "ArrowRight","0","z","x","c","v","b","n","m",",",".","/","1","2","a", "s", "d", "f", "g", "h", "j", "k", "l", ";", "'", "Enter", "4", "5", "6", "+", "w", "e", "t", "y", "u", "o", "p", "]", "\\", "7", "9"];
         var notetonumber = function (note) {
             var notes = ["C4", "D4", "E4", "F4", "G4", "A4", "B4", "C5", "D5", "E5", "F5", "G5", "A5", "B5", "C6", "D6", "E6"];
             var notenumbers = ["1", "2", "3", "4", "5", "6", "7", "1", "2", "3", "4", "5", "6", "7", "1", "2", "3"];
@@ -302,12 +302,12 @@
             return notes[notenumbers.indexOf(note)];
         }
         var notetokeyboard = function (keyboard) {
-            var keyboards = ["ArrowRight","0","z","x","c","v","b","n","m",",",".","/","a", "s", "d", "f", "g", "h", "j", "k", "l", ";", "'", "Enter", "4", "5", "6", "+", "w", "e", "t", "y", "u", "o", "p", "]", "\\", "7", "9"];
+            var keyboards = [" ","ArrowLeft","z","x","c","v","b","n","m",",",".","/","a", "s", "d", "f", "g", "h", "j", "k", "l", ";", "'", "Enter", "4", "5", "6", "+", "w", "e", "t", "y", "u", "o", "p", "]", "\\", "7", "9"];
             var notes = ["C3","C#3", "D3","D#3", "E3", "F3","F#3","G3","G#3","A3","A#3","B3","C4", "D4", "E4", "F4", "G4", "A4", "B4", "C5", "D5", "E5", "F5", "G5", "A5", "B5", "C6", "D6", "C#4", "D#4", "F#4", "G#4", "A#4", "C#5", "D#5", "F#5", "G#5", "A#5", "C#6"];
             return keyboards[notes.indexOf(keyboard)];
         }
         var keyboardtonote = function (keyboard) {
-            var keyboards = ["ArrowRight","0","z","x","c","v","b","n","m",",",".","/","a", "s", "d", "f", "g", "h", "j", "k", "l", ";", "'", "Enter", "4", "5", "6", "+", "w", "e", "t", "y", "u", "o", "p", "]", "\\", "7", "9"];
+            var keyboards = [" ","ArrowLeft","z","x","c","v","b","n","m",",",".","/","a", "s", "d", "f", "g", "h", "j", "k", "l", ";", "'", "Enter", "4", "5", "6", "+", "w", "e", "t", "y", "u", "o", "p", "]", "\\", "7", "9"];
             var notes = ["C3","C#3", "D3","D#3", "E3","F3","F#3","G3","G#3","A3","A#3","B3","C4", "D4", "E4", "F4", "G4", "A4", "B4", "C5", "D5", "E5", "F5", "G5", "A5", "B5", "C6", "D6", "C#4", "D#4", "F#4", "G#4", "A#4", "C#5", "D#5", "F#5", "G#5", "A#5", "C#6"];
             console.log(keyboards.indexOf(keyboard));
             return notes[keyboards.indexOf(keyboard)];
