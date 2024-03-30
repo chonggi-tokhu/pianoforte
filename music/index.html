@@ -1,0 +1,776 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>player</title>
+    <script src="https://chonggi-tokhu.github.io/pianoforte/soundfont-player-js/player.js"></script>
+    <script src="./midi_reader.js"></script>
+    <script src="https://code.jquery.com/jquery-3.6.3.js"></script>
+    <script
+        src="https://chonggi-tokhu.github.io/svg_to_video/google_translate_meme_maker/ColourgreyShorterCSSJS.js"></script>
+    <link rel="stylesheet"
+        href="https://chonggi-tokhu.github.io/svg_to_video/google_translate_meme_maker/ColourgreyShorter.css">
+    <style>
+        :root {
+            --sum-2-left: 1;
+            --old-width: calc((59em) / 0.397);
+        }
+
+        .keys {
+            display: flex;
+        }
+
+        .keys .key.white {
+            height: 12em;
+            width: 3em;
+            position: relative;
+            background: #e0e8f0;
+            border: 1px solid #051315;
+            color: #051315;
+            z-index: 10;
+        }
+
+        .keys .key.black {
+            height: 6em;
+            width: 2em;
+            position: absolute;
+            background: #051315;
+            border-left: 1px solid #e0e8f0;
+            border-right: 1px solid #e0e8f0;
+            border-bottom: 1px solid #051315;
+            z-index: 20;
+            color: #e0e8f0;
+        }
+
+        .keys .key p {
+            position: relative;
+            bottom: calc(4em - 100%);
+        }
+
+        .piano {
+            border: 1rem solid #623421;
+            width: min-content;
+            --scaleX: calc(1vw / 1em);
+            --new-width: 100vw;
+            --new-height: 0vh;
+            transform: scale(var(--scaleX)) translate(calc(100vw - var(--old-width)), 2.5em);
+        }
+
+
+        .piano_wrapper {
+            width: fit-content;
+            height: fit-content;
+        }
+
+        .sheet {
+            height: 45vh;
+            border: 1rem solid #623421;
+            display: flex;
+            width: fit-content;
+            min-width: 100%;
+            --scaleX: calc(1vw / 1em);
+            --new-width: 100vw;
+            --new-height: 0vh;
+            transform: scale(var(--scaleX)) translate(calc(100vw - var(--old-width)), 2.5em);
+        }
+
+        .loading::after {
+            content: 'LOADING...';
+            font-size: 480%;
+            text-align: center;
+            width: 100%;
+        }
+
+        .white.highlight {
+            background: #80a0e0 !important;
+        }
+
+        .black.highlight {
+            background: #204070 !important;
+        }
+
+        .key.key_notebar {
+            background: unset !important;
+        }
+
+        .key.key_notebar.black {
+
+            position: absolute;
+        }
+
+        .key.key_notebar.white {
+            position: relative;
+        }
+
+        .key.key_notebar .notebar {
+            background: #6060e0;
+            width: 0.5em;
+            position: relative;
+        }
+
+        .guest_profile img[src=''] {
+            display: none;
+        }
+    </style>
+</head>
+
+<body>
+    <div class="body enablepopover">
+        <div class="music" id="music">
+            <div class="input-group">
+                <input type="text" name="img" id="img" placeholder="background image">
+                <button class="btn btn-primary" id="setimg">set bg image</button>
+                <input type="checkbox" id="chaco"><label for="chaco">차커(차들어커피야) 전용 모드</label>
+                <button class="btn btn-primary" onclick="document.querySelector('.piano_wrapper').focus();">연주
+                    시작하기</button>
+                <p><span style="font-weight:bold;color:#c00538;">주의: 실제로는 한 옥타브 높습니다.</span></p>
+                <label><input type="file" name="myfile" id="myfile" style="display: none;"><button
+                        class="btn btn-primary"
+                        onclick="this.parentElement.querySelector('input[type=file]').click();">파일 열기</button></label>
+                <button class="btn btn-primary" onclick="if(typeof loadFile==='function') loadFile();">연 파일로
+                    연주하기</button>
+            </div>
+            <div class="guest_profile_wrapper" style="position:absolute;text-align:center;width:100%;">
+                <p class="guest_profile"><a href="https://www.youtube.com/@chaco_calculator"><img width="325"></a></p>
+            </div>
+            <div class="sheet loading" id="sheet">
+                <!--<div class="key white" data-piano-code="C4" data-keyboard-key="a"></div>
+                <div class="key black" data-piano-code="C#4" data-keyboard-key="w"></div>
+                <div class="key white" data-piano-code="D4" data-keyboard-key="s"></div>
+                <div class="key black" data-piano-code="D#4" data-keyboard-key="e"></div>
+                <div class="key white" data-piano-code="E4" data-keyboard-key="d"></div>
+                <div class="key white" data-piano-code="F4" data-keyboard-key="f"></div>
+                <div class="key black" data-piano-code="F#4" data-keyboard-key="t"></div>
+                <div class="key white" data-piano-code="G4" data-keyboard-key="g"></div>
+                <div class="key black" data-piano-code="G#4" data-keyboard-key="y"></div>
+                <div class="key white" data-piano-code="A4" data-keyboard-key="h"></div>
+                <div class="key black" data-piano-code="A#4" data-keyboard-key="u"></div>
+                <div class="key white" data-piano-code="B4" data-keyboard-key="j"></div>
+                <div class="key white" data-piano-code="C5" data-keyboard-key="k"></div>
+                <div class="key black" data-piano-code="C#5" data-keyboard-key="o"></div>
+                <div class="key white" data-piano-code="D5" data-keyboard-key="l"></div>
+                <div class="key black" data-piano-code="D#5" data-keyboard-key="p"></div>
+                <div class="key white" data-piano-code="E5" data-keyboard-key=";"></div>
+                <div class="key white" data-piano-code="F5" data-keyboard-key="'"></div>
+                <div class="key black" data-piano-code="F#5" data-keyboard-key="]"></div>
+                <div class="key white" data-piano-code="G5" data-keyboard-key="Enter"></div>
+                <div class="key black" data-piano-code="G#5" data-keyboard-key="\"></div>
+                <div class="key white" data-piano-code="A5" data-keyboard-key="4"></div>
+                <div class="key black" data-piano-code="A#5" data-keyboard-key="7"></div>
+                <div class="key white" data-piano-code="B5" data-keyboard-key="5"></div>
+                <div class="key white" data-piano-code="C6" data-keyboard-key="6"></div>
+                <div class="key key_notebar white" data-piano-code="A0"></div>
+                <div class="key key_notebar black" data-piano-code="A#0"></div>
+                <div class="key key_notebar white" data-piano-code="B0"></div>
+                <div class="key key_notebar white" data-piano-code="C1"></div>
+                <div class="key key_notebar black" data-piano-code="C#1"></div>
+                <div class="key key_notebar white" data-piano-code="D1"></div>
+                <div class="key key_notebar black" data-piano-code="D#1"></div>
+                <div class="key key_notebar white" data-piano-code="E1"></div>
+                <div class="key key_notebar white" data-piano-code="F1"></div>
+                <div class="key key_notebar black" data-piano-code="F#1"></div>
+                <div class="key key_notebar white" data-piano-code="G1"></div>
+                <div class="key key_notebar black" data-piano-code="G#1"></div>
+                <div class="key key_notebar white" data-piano-code="A1"></div>
+                <div class="key key_notebar black" data-piano-code="A#1"></div>
+                <div class="key key_notebar white" data-piano-code="B1"></div>
+                <div class="key key_notebar white" data-piano-code="C2"></div>
+                <div class="key key_notebar black" data-piano-code="C#2"></div>
+                <div class="key key_notebar white" data-piano-code="D2"></div>
+                <div class="key key_notebar black" data-piano-code="D#2"></div>
+                <div class="key key_notebar white" data-piano-code="E2"></div>
+                <div class="key key_notebar white" data-piano-code="F2"></div>
+                <div class="key key_notebar black" data-piano-code="F#2"></div>
+                <div class="key key_notebar white" data-piano-code="G2"></div>
+                <div class="key key_notebar black" data-piano-code="G#2"></div>
+                <div class="key key_notebar white" data-piano-code="A2"></div>
+                <div class="key key_notebar black" data-piano-code="A#2"></div>
+                <div class="key key_notebar white" data-piano-code="B2"></div>
+                <div class="key key_notebar white" data-piano-code="C3" data-keyboard-key=" "></div>
+                <div class="key key_notebar black" data-piano-code="C#3" data-keyboard-key="ArrowLeft"></div>
+                <div class="key key_notebar white" data-piano-code="D3" data-keyboard-key="z"></div>
+                <div class="key key_notebar black" data-piano-code="D#3" data-keyboard-key="x"></div>
+                <div class="key key_notebar white" data-piano-code="E3" data-keyboard-key="c"></div>
+                <div class="key key_notebar white" data-piano-code="F3" data-keyboard-key="v"></div>
+                <div class="key key_notebar black" data-piano-code="F#3" data-keyboard-key="b"></div>
+                <div class="key key_notebar white" data-piano-code="G3" data-keyboard-key="n"></div>
+                <div class="key key_notebar black" data-piano-code="G#3" data-keyboard-key="m"></div>
+                <div class="key key_notebar white" data-piano-code="A3" data-keyboard-key=","></div>
+                <div class="key key_notebar black" data-piano-code="A#3" data-keyboard-key="."></div>
+                <div class="key key_notebar white" data-piano-code="B3" data-keyboard-key="/"></div>
+                <div class="key key_notebar white" data-piano-code="C4" data-keyboard-key="a"></div>
+                <div class="key key_notebar black" data-piano-code="C#4" data-keyboard-key="w"></div>
+                <div class="key key_notebar white" data-piano-code="D4" data-keyboard-key="s"></div>
+                <div class="key key_notebar black" data-piano-code="D#4" data-keyboard-key="e"></div>
+                <div class="key key_notebar white" data-piano-code="E4" data-keyboard-key="d"></div>
+                <div class="key key_notebar white" data-piano-code="F4" data-keyboard-key="f"></div>
+                <div class="key key_notebar black" data-piano-code="F#4" data-keyboard-key="t"></div>
+                <div class="key key_notebar white" data-piano-code="G4" data-keyboard-key="g"></div>
+                <div class="key key_notebar black" data-piano-code="G#4" data-keyboard-key="y"></div>
+                <div class="key key_notebar white" data-piano-code="A4" data-keyboard-key="h"></div>
+                <div class="key key_notebar black" data-piano-code="A#4" data-keyboard-key="u"></div>
+                <div class="key key_notebar white" data-piano-code="B4" data-keyboard-key="j"></div>
+                <div class="key key_notebar white" data-piano-code="C5" data-keyboard-key="k"></div>
+                <div class="key key_notebar black" data-piano-code="C#5" data-keyboard-key="o"></div>
+                <div class="key key_notebar white" data-piano-code="D5" data-keyboard-key="l"></div>
+                <div class="key key_notebar black" data-piano-code="D#5" data-keyboard-key="p"></div>
+                <div class="key key_notebar white" data-piano-code="E5" data-keyboard-key=";"></div>
+                <div class="key key_notebar white" data-piano-code="F5" data-keyboard-key="'"></div>
+                <div class="key key_notebar black" data-piano-code="F#5" data-keyboard-key="]"></div>
+                <div class="key key_notebar white" data-piano-code="G5" data-keyboard-key="Enter"></div>
+                <div class="key key_notebar black" data-piano-code="G#5" data-keyboard-key="\"></div>
+                <div class="key key_notebar white" data-piano-code="A5" data-keyboard-key="4"></div>
+                <div class="key key_notebar black" data-piano-code="A#5" data-keyboard-key="7"></div>
+                <div class="key key_notebar white" data-piano-code="B5" data-keyboard-key="5"></div>
+                <div class="key key_notebar white" data-piano-code="C6" data-keyboard-key="6"></div>
+                <div class="key key_notebar black" data-piano-code="C#6" data-keyboard-key="9"></div>
+                <div class="key key_notebar white" data-piano-code="D6" data-keyboard-key="+"></div>
+                <div class="key key_notebar black" data-piano-code="D#6"></div>
+                <div class="key key_notebar white" data-piano-code="E6"></div>
+                <div class="key key_notebar white" data-piano-code="F6"></div>
+                <div class="key key_notebar black" data-piano-code="F#6"></div>
+                <div class="key key_notebar white" data-piano-code="G6"></div>
+                <div class="key key_notebar black" data-piano-code="G#6"></div>
+                <div class="key key_notebar white" data-piano-code="A6"></div>
+                <div class="key key_notebar black" data-piano-code="A#6"></div>
+                <div class="key key_notebar white" data-piano-code="B6"></div>
+                <div class="key key_notebar white" data-piano-code="C7"></div>
+                <div class="key key_notebar black" data-piano-code="C#7"></div>
+                <div class="key key_notebar white" data-piano-code="D7"></div>
+                <div class="key key_notebar black" data-piano-code="D#7"></div>
+                <div class="key key_notebar white" data-piano-code="E7"></div>
+                <div class="key key_notebar white" data-piano-code="F7"></div>
+                <div class="key key_notebar black" data-piano-code="F#7"></div>
+                <div class="key key_notebar white" data-piano-code="G7"></div>
+                <div class="key key_notebar black" data-piano-code="G#7"></div>
+                <div class="key key_notebar white" data-piano-code="A7"></div>
+                <div class="key key_notebar black" data-piano-code="A#7"></div>
+                <div class="key key_notebar white" data-piano-code="B7"></div>
+                <div class="key key_notebar white" data-piano-code="C8"></div>-->
+            </div>
+            <div class="piano_wrapper" tabindex="0">
+                <div class="piano" id="piano">
+                    <div class="keys" id="keys">
+                        <!--<div class="key white" data-piano-code="C3" data-keyboard-key="z"></div>
+                        <div class="key black" data-piano-code="C#3" data-keyboard-key="x"></div>
+                        <div class="key white" data-piano-code="D3" data-keyboard-key="c"></div>
+                        <div class="key black" data-piano-code="D#3" data-keyboard-key="v"></div>
+                        <div class="key white" data-piano-code="E3" data-keyboard-key="b"></div>-->
+                        <div class="key white" data-piano-code="A0"></div>
+                        <div class="key black" data-piano-code="A#0"></div>
+                        <div class="key white" data-piano-code="B0"></div>
+                        <div class="key white" data-piano-code="C1"></div>
+                        <div class="key black" data-piano-code="C#1"></div>
+                        <div class="key white" data-piano-code="D1"></div>
+                        <div class="key black" data-piano-code="D#1"></div>
+                        <div class="key white" data-piano-code="E1"></div>
+                        <div class="key white" data-piano-code="F1"></div>
+                        <div class="key black" data-piano-code="F#1"></div>
+                        <div class="key white" data-piano-code="G1"></div>
+                        <div class="key black" data-piano-code="G#1"></div>
+                        <div class="key white" data-piano-code="A1"></div>
+                        <div class="key black" data-piano-code="A#1"></div>
+                        <div class="key white" data-piano-code="B1"></div>
+                        <div class="key white" data-piano-code="C2"></div>
+                        <div class="key black" data-piano-code="C#2"></div>
+                        <div class="key white" data-piano-code="D2"></div>
+                        <div class="key black" data-piano-code="D#2"></div>
+                        <div class="key white" data-piano-code="E2"></div>
+                        <div class="key white" data-piano-code="F2"></div>
+                        <div class="key black" data-piano-code="F#2"></div>
+                        <div class="key white" data-piano-code="G2"></div>
+                        <div class="key black" data-piano-code="G#2"></div>
+                        <div class="key white" data-piano-code="A2"></div>
+                        <div class="key black" data-piano-code="A#2"></div>
+                        <div class="key white" data-piano-code="B2"></div>
+                        <div class="key white" data-piano-code="C3" data-keyboard-key=" "></div>
+                        <div class="key black" data-piano-code="C#3" data-keyboard-key="ArrowLeft"></div>
+                        <div class="key white" data-piano-code="D3" data-keyboard-key="z"></div>
+                        <div class="key black" data-piano-code="D#3" data-keyboard-key="x"></div>
+                        <div class="key white" data-piano-code="E3" data-keyboard-key="c"></div>
+                        <div class="key white" data-piano-code="F3" data-keyboard-key="v"></div>
+                        <div class="key black" data-piano-code="F#3" data-keyboard-key="b"></div>
+                        <div class="key white" data-piano-code="G3" data-keyboard-key="n"></div>
+                        <div class="key black" data-piano-code="G#3" data-keyboard-key="m"></div>
+                        <div class="key white" data-piano-code="A3" data-keyboard-key=","></div>
+                        <div class="key black" data-piano-code="A#3" data-keyboard-key="."></div>
+                        <div class="key white" data-piano-code="B3" data-keyboard-key="/"></div>
+                        <div class="key white" data-piano-code="C4" data-keyboard-key="a"></div>
+                        <div class="key black" data-piano-code="C#4" data-keyboard-key="w"></div>
+                        <div class="key white" data-piano-code="D4" data-keyboard-key="s"></div>
+                        <div class="key black" data-piano-code="D#4" data-keyboard-key="e"></div>
+                        <div class="key white" data-piano-code="E4" data-keyboard-key="d"></div>
+                        <div class="key white" data-piano-code="F4" data-keyboard-key="f"></div>
+                        <div class="key black" data-piano-code="F#4" data-keyboard-key="t"></div>
+                        <div class="key white" data-piano-code="G4" data-keyboard-key="g"></div>
+                        <div class="key black" data-piano-code="G#4" data-keyboard-key="y"></div>
+                        <div class="key white" data-piano-code="A4" data-keyboard-key="h"></div>
+                        <div class="key black" data-piano-code="A#4" data-keyboard-key="u"></div>
+                        <div class="key white" data-piano-code="B4" data-keyboard-key="j"></div>
+                        <div class="key white" data-piano-code="C5" data-keyboard-key="k"></div>
+                        <div class="key black" data-piano-code="C#5" data-keyboard-key="o"></div>
+                        <div class="key white" data-piano-code="D5" data-keyboard-key="l"></div>
+                        <div class="key black" data-piano-code="D#5" data-keyboard-key="p"></div>
+                        <div class="key white" data-piano-code="E5" data-keyboard-key=";"></div>
+                        <div class="key white" data-piano-code="F5" data-keyboard-key="'"></div>
+                        <div class="key black" data-piano-code="F#5" data-keyboard-key="]"></div>
+                        <div class="key white" data-piano-code="G5" data-keyboard-key="Enter"></div>
+                        <div class="key black" data-piano-code="G#5" data-keyboard-key="\"></div>
+                        <div class="key white" data-piano-code="A5" data-keyboard-key="4"></div>
+                        <div class="key black" data-piano-code="A#5" data-keyboard-key="7"></div>
+                        <div class="key white" data-piano-code="B5" data-keyboard-key="5"></div>
+                        <div class="key white" data-piano-code="C6" data-keyboard-key="6"></div>
+                        <div class="key black" data-piano-code="C#6" data-keyboard-key="9"></div>
+                        <div class="key white" data-piano-code="D6" data-keyboard-key="+"></div>
+                        <div class="key black" data-piano-code="D#6"></div>
+                        <div class="key white" data-piano-code="E6"></div>
+                        <div class="key white" data-piano-code="F6"></div>
+                        <div class="key black" data-piano-code="F#6"></div>
+                        <div class="key white" data-piano-code="G6"></div>
+                        <div class="key black" data-piano-code="G#6"></div>
+                        <div class="key white" data-piano-code="A6"></div>
+                        <div class="key black" data-piano-code="A#6"></div>
+                        <div class="key white" data-piano-code="B6"></div>
+                        <div class="key white" data-piano-code="C7"></div>
+                        <div class="key black" data-piano-code="C#7"></div>
+                        <div class="key white" data-piano-code="D7"></div>
+                        <div class="key black" data-piano-code="D#7"></div>
+                        <div class="key white" data-piano-code="E7"></div>
+                        <div class="key white" data-piano-code="F7"></div>
+                        <div class="key black" data-piano-code="F#7"></div>
+                        <div class="key white" data-piano-code="G7"></div>
+                        <div class="key black" data-piano-code="G#7"></div>
+                        <div class="key white" data-piano-code="A7"></div>
+                        <div class="key black" data-piano-code="A#7"></div>
+                        <div class="key white" data-piano-code="B7"></div>
+                        <div class="key white" data-piano-code="C8"></div>
+                        <!--<div class="key black" data-piano-code="C#6" data-keyboard-key="+"></div>-->
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <script>
+        var cgrcssjs = new ColourgreyShorterJS.ColourgreyShorterCSS(false);
+        var Urobot2011MIDIPlayerJS = Urobot2011MIDIPlayerJS;
+        var midi_reader = null;
+        var song = {};
+        var instrument;
+        var loadFile, loadDataUri, Player;
+        var AudioContext = window.AudioContext || window.webkitAudioContext || false;
+        var ac = new AudioContext || new webkitAudioContext;
+        var scalekeys = ["C0", "C#0", "Db0", "D0", "D#0", "Eb0", "E0", "F0", "F#0", "Gb0", "G0", "G#0", "Ab0", "A0", "A#0", "Bb0", "B0", "C1", "C#1", "Db1", "D1", "D#1", "Eb1", "E1", "F1", "F#1", "Gb1", "G1", "G#1", "Ab1", "A1", "A#1", "Bb1", "B1", "C2", "C#2", "Db2", "D2", "D#2", "Eb2", "E2", "F2", "F#2", "Gb2", "G2", "G#2", "Ab2", "A2", "A#2", "Bb2", "B2", "C3", "C#3", "Db3", "D3", "D#3", "Eb3", "E3", "F3", "F#3", "Gb3", "G3", "G#3", "Ab3", "A3", "A#3", "Bb3", "B3", "C4", "C#4", "Db4", "D4", "D#4", "Eb4", "E4", "F4", "F#4", "Gb4", "G4", "G#4", "Ab4", "A4", "A#4", "Bb4", "B4", "C5", "C#5", "Db5", "D5", "D#5", "Eb5", "E5", "F5", "F#5", "Gb5", "G5", "G#5", "Ab5", "A5", "A#5", "Bb5", "B5", "C6", "C#6", "Db6", "D6", "D#6", "Eb6", "E6", "F6", "F#6", "Gb6", "G6", "G#6", "Ab6", "A6", "A#6", "Bb6", "B6", "C7", "C#7", "Db7", "D7", "D#7", "Eb7", "E7", "F7", "F#7", "Gb7", "G7", "G#7", "Ab7", "A7", "A#7", "Bb7", "B7", "C8"];
+        var currentTime;
+        var timeoutId;
+        var timeoutId2;
+        var timeoutId3;
+        var bool1 = 0;
+        var bool2 = true;
+        var tempo = 50;
+        var keynotes = scalekeys;
+        var notelengths = [];
+        var _whites = 0;
+        var pitchnumbers = {
+            21: 'A0',
+            22: 'A#0',
+            23: 'B0',
+            24: 'C1',
+            25: 'C#1',
+            26: 'D1',
+            27: 'D#1',
+            28: 'E1',
+            29: 'F1',
+            30: 'F#1',
+            31: 'G1',
+            32: 'G#1',
+            33: 'A1',
+            34: 'A#1',
+            35: 'B1',
+            36: 'C2',
+            37: 'C#2',
+            38: 'D2',
+            39: 'D#2',
+            40: 'E2',
+            41: 'F2',
+            42: 'F#2',
+            43: 'G2',
+            44: 'G#2',
+            45: 'A2',
+            46: 'A#2',
+            47: 'B2',
+            48: 'C3',
+            49: 'C#3',
+            50: 'D3',
+            51: 'D#3',
+            52: 'E3',
+            53: 'F3',
+            54: 'F#3',
+            55: 'G3',
+            56: 'G#3',
+            57: 'A3',
+            58: 'A#3',
+            59: 'B3',
+            60: 'C4',
+            61: 'C#4',
+            62: 'D4',
+            63: 'D#4',
+            64: 'E4',
+            65: 'F4',
+            66: 'F#4',
+            67: 'G4',
+            68: 'G#4',
+            69: 'A4',
+            70: 'A#4',
+            71: 'B4',
+            72: 'C5',
+            73: 'C#5',
+            74: 'D5',
+            75: 'D#5',
+            76: 'E5',
+            77: 'F5',
+            78: 'F#5',
+            79: 'G5',
+            80: 'G#5',
+            81: 'A5',
+            82: 'A#5',
+            83: 'B5',
+            84: 'C6',
+            85: 'C#6',
+            86: 'D6',
+            87: 'D#6',
+            88: 'E6',
+            89: 'F6',
+            90: 'F#6',
+            91: 'G6',
+            92: 'G#6',
+            93: 'A6',
+            94: 'A#6',
+            95: 'B6',
+            96: 'C7',
+            97: 'C#7',
+            98: 'D7',
+            99: 'D#7',
+            100: 'E7',
+            101: 'F7',
+            102: 'F#7',
+            103: 'G7',
+            104: 'G#7',
+            105: 'A7',
+            107: 'A#7',
+            108: 'B7',
+            109: 'C8',
+        }
+        var forchaco = document.getElementById("chaco");
+        var guest_profile = document.getElementById("guest_profile");
+        var _black_and_white = document.querySelectorAll(`.keys .key[data-piano-code]`);
+        _black_and_white.forEach(function (val, idx, arr) {
+            if (val.classList.contains("black")) {
+                val.style.left = `calc(${_whites} * 3em - 1em)`;
+                val.innerHTML = `<p><span style="font-weight:bold;">${val.getAttribute("data-piano-code")}</span><br /><span style="font-size:65%;">'${val.getAttribute("data-keyboard-key")}'</span></p>`;
+            } else {
+                _whites++;
+                val.innerHTML = `<p><span style="font-weight:bold;">${val.getAttribute("data-piano-code")}</span><br /><span style="font-size:65%;">computer '${val.getAttribute("data-keyboard-key")}'</span></p>`;
+            }
+            val.addEventListener("mousedown", function (e) {
+                var optsobj = { duration: 100000 };
+                if (pedal == 1) {
+                    optsobj['adsr'] = ['sustain'];
+                }
+                var a = instrument.play(val.getAttribute("data-piano-code", 0, optsobj));
+                /*console.log(a);*/
+                bool2 = false;
+                currKeys2[val.getAttribute("data-piano-code")] = a.id;
+                get_key_el(val.getAttribute("data-piano-code")).classList.add("highlight");
+            });
+            val.addEventListener("mouseup", function (e) {
+                bool2 = true;
+                instrument.stop(0, [currKeys2[val.getAttribute("data-piano-code")]]);
+                currKeys2[val.getAttribute("data-piano-code")] = false;
+                get_key_el(val.getAttribute("data-piano-code")).classList.remove("highlight");
+            });
+        });
+        var _whites2 = 0;
+        var _notebar_BNW = document.querySelectorAll(`.key.key_notebar`);
+        _notebar_BNW.forEach(function (val, idx, arr) {
+            if (val.classList.contains("black")) {
+                val.style.left = `calc(${_whites2} * 3em - 1em)`;
+            } else {
+                _whites2++;
+            }
+        });
+        /*var _black_and_white2 = document.querySelectorAll(`.sheet .key[data-piano-code]`);
+        _black_and_white2.forEach(function (val, idx, arr) {
+            if (val.classList.contains("black")) {
+                val.style.left = `calc(${_whites} * 3em - 1em)`;
+            } else {
+                _whites++;
+            }
+        });*/
+        ac.length = 50;
+        var currKeys = [];
+        var currKeys2 = {};
+        var pedal = 0;
+        function get_key_el(note) {
+            return document.querySelector('.keys .key[data-piano-code="' + note + '"]');
+        }
+        document.querySelector('.piano_wrapper').addEventListener("keydown", function (e) {
+            e.preventDefault();
+            if (!keyboards2.includes(e.key)) {
+                return false;
+            }
+            var key = keyboardtonote(e.key);
+            if (currKeys.includes(key) || currKeys2[key]) {
+                return;
+            }
+            /*console.log(key);*/
+            var optsobj = { duration: 100000 };
+            if (pedal == 1) {
+                optsobj['adsr'] = ['sustain'];
+            }
+            var a = instrument.play(key, 0, optsobj);
+            /*console.log(a);*/
+            bool2 = false;
+            currKeys2[key] = a.id;
+            get_key_el(key).classList.add("highlight");
+            e.preventDefault();
+        });
+
+        document.querySelector('.piano_wrapper').addEventListener("keyup", function (e) {
+            if (!keyboards2.includes(e.key)) {
+                return false;
+            }
+            var key = notetonote(keyboardtonote(e.key));
+            key = keyboardtonote(e.key);
+            bool2 = true;
+            currKeys.splice(currKeys.indexOf(key));
+            instrument.stop(0, [currKeys2[key]]);
+            currKeys2[key] = false;
+            get_key_el(key).classList.remove("highlight");
+        });
+
+        var keyboards2 = [" ", "ArrowLeft", "ArrowRight", "0", "z", "x", "c", "v", "b", "n", "m", ",", ".", "/", "1", "2", "a", "s", "d", "f", "g", "h", "j", "k", "l", ";", "'", "Enter", "4", "5", "6", "+", "w", "e", "t", "y", "u", "o", "p", "]", "\\", "7", "9"];
+        var notetonumber = function (note) {
+            var notes = ["C4", "D4", "E4", "F4", "G4", "A4", "B4", "C5", "D5", "E5", "F5", "G5", "A5", "B5", "C6", "D6", "E6"];
+            var notenumbers = ["1", "2", "3", "4", "5", "6", "7", "1", "2", "3", "4", "5", "6", "7", "1", "2", "3"];
+            return notenumbers[notes.indexOf(note)];
+        }
+        var numbertonote = function (note) {
+            var notes = ["C4", "D4", "E4", "F4", "G4", "A4", "B4", "C5", "D5", "E5", "F5", "G5", "A5", "B5", "C6", "D6", "E6"];
+            var notenumbers = ["1", "2", "3", "4", "5", "6", "7", "1", "2", "3", "4", "5", "6", "7", "1", "2", "3"];
+            return notes[notenumbers.indexOf(note)];
+        }
+        var notetokeyboard = function (keyboard) {
+            var keyboards = [" ", "ArrowLeft", "z", "x", "c", "v", "b", "n", "m", ",", ".", "/", "a", "s", "d", "f", "g", "h", "j", "k", "l", ";", "'", "Enter", "4", "5", "6", "+", "w", "e", "t", "y", "u", "o", "p", "]", "\\", "7", "9"];
+            var notes = ["C3", "C#3", "D3", "D#3", "E3", "F3", "F#3", "G3", "G#3", "A3", "A#3", "B3", "C4", "D4", "E4", "F4", "G4", "A4", "B4", "C5", "D5", "E5", "F5", "G5", "A5", "B5", "C6", "D6", "C#4", "D#4", "F#4", "G#4", "A#4", "C#5", "D#5", "F#5", "G#5", "A#5", "C#6"];
+            return keyboards[notes.indexOf(keyboard)];
+        }
+        var keyboardtonote = function (keyboard) {
+            var keyboards = [" ", "ArrowLeft", "z", "x", "c", "v", "b", "n", "m", ",", ".", "/", "a", "s", "d", "f", "g", "h", "j", "k", "l", ";", "'", "Enter", "4", "5", "6", "+", "w", "e", "t", "y", "u", "o", "p", "]", "\\", "7", "9"];
+            var notes = ["C3", "C#3", "D3", "D#3", "E3", "F3", "F#3", "G3", "G#3", "A3", "A#3", "B3", "C4", "D4", "E4", "F4", "G4", "A4", "B4", "C5", "D5", "E5", "F5", "G5", "A5", "B5", "C6", "D6", "C#4", "D#4", "F#4", "G#4", "A#4", "C#5", "D#5", "F#5", "G#5", "A#5", "C#6"];
+            return notes[keyboards.indexOf(keyboard)];
+        }
+
+        var notetonote = function (note) {
+            var notes = ["C4", "D4", "E4", "F4", "G4", "A4", "B4", "C5", "D5", "E5", "F5", "G5", "A5", "B5", "C6", "D6", "E6"];
+            var notes1 = ["D6", "B5", "G5", "E5", "C5", "A4", "F4", "D4", "C4", "E4", "G4", "B4", "D5", "F5", "A5", "C6", "E6"];
+            return notes1[notes.indexOf(note)];
+        }
+
+        var keyToNote = [];
+        var noteToKey = [];
+        /*(function () {
+            //first note : 0x15 == 33
+            //last note : 0x6C == 264
+            var keys = ['C', 'Db', 'D', 'Eb', 'E', 'F', 'Gb', 'G', 'Ab', 'A', 'Bb', 'B'];
+            var keys2 = ['C', 'C#', 'D', 'D#', 'E', 'F', 'F#', 'G', 'G#', 'A', 'A#', 'B'];
+            for (var i = 33; i <= 264; i++) {
+                var octave = (i - 12) / 12 >> 0;
+                var name = keys2[i % 12] + octave;
+                keyToNote[name] = i;
+                noteToKey[i] = name;
+            }
+        })();*/
+
+        var changeTempo = function (tempo) {
+            Player.tempo = tempo;
+        }
+
+        var play = function () {
+            Player.play();
+        }
+
+        var pause = function () {
+            Player.pause();
+        }
+
+        var stop = function () {
+            Player.stop();
+        }
+
+        var reset = function () {
+        }
+
+        var notelengthunit = 10;
+        var playmidi = function (event) {
+            var note0 = document.querySelector('.sheet .key[data-piano-code="' + event.noteName + '"]');
+            if (!(note0 instanceof HTMLElement)) {
+                return false;
+            }
+            var note1 = note0.appendChild(document.createElement("p"));
+            note1.style.width = '1.2em';
+            note1.style.position = 'relative'
+            note1.style.textAlign = 'center';
+            note1.style.height = ac.currentTime * notelengthunit + 'px';
+            note1.animate([{ top: '0px' }, { top: '100%' }], { duration: ac.currentTime });
+            setTimeout(function () {
+                note1.remove();
+            }, ac.currentTime);
+        }
+
+        var lesson_mode = function (event) {
+            playmidi(event);
+            timeoutId = setTimeout(function () {
+                pause();
+            }, 1500);
+            timeoutId1 = setTimeout(function () {
+                playmidi(event);
+            }, 3000);
+            // setTimeout(function() {
+            // 	playmidi(event);
+            // }, 9000);
+            // setTimeout(function() {
+            // 	playmidi(event);
+            // }, 12000);
+            timeoutId2 = setTimeout(function () {
+                play();
+            }, 7500);
+
+            clearTimeout(timeoutId);
+            clearTimeout(timeoutId2);
+            clearTimeout(timeoutId3);
+
+        }
+        var notelengths0 = {};
+        var notebar_animation = function (note, start, end) {
+            /*var notebarElPar = document.querySelector(`.key[data-piano-code="${note}"].key_notebar`);
+            var notebarEl = notebarElPar.appendChild(document.createElement("div"));
+            notelengths0[note] = end - start;
+            notebarEl.classList.add("notebar");
+            notebarEl.style.height = notelengths0[note] * 15 + 'px';
+            notebarEl.style.position = 'relative';
+            var currtime = ac.currentTime;
+            notebarEl.animate([{ 'top': (end) * -10 + 'px' }, { 'top': '500px' }], { duration: start * 1000 });
+            window.setTimeout(function () {
+                notebarEl.animate([{ 'height': notelengths0[note] * 15 + 'px' }, { 'height': '0px' }], { duration: (end - start) * 1000 });
+                window.setTimeout(function () {
+                    notebarEl.remove();
+                    notelengths0[note] = 0;
+                }, end * 1000 - start * 1000);
+            }, start * 1000);*/
+        }
+        var playmidi2 = function (track, idx) {
+            if (midi_reader instanceof MIDIFile && song != {} && typeof track === 'number' && typeof idx === 'number') {
+                var thisnote = song.tracks[track].notes[idx];
+                window.setTimeout(function () {
+                    var newplaying = instrument.play(pitchnumbers[thisnote.pitch], 0, {});
+                    bool2 = false;
+                    currKeys2[pitchnumbers[thisnote.pitch]] = newplaying.id;
+                    get_key_el(pitchnumbers[thisnote.pitch]).classList.add("highlight");
+                    notebar_animation(pitchnumbers[thisnote.pitch], thisnote.when, thisnote.duration + thisnote.when);
+                }, thisnote.when * 1000);
+                window.setTimeout(function () {
+                    bool2 = true;
+                    currKeys.splice(currKeys.indexOf(pitchnumbers[thisnote.pitch]));
+                    instrument.stop(0, [currKeys2[pitchnumbers[thisnote.pitch]]]);
+                    currKeys2[pitchnumbers[thisnote.pitch]] = false;
+                    get_key_el(pitchnumbers[thisnote.pitch]).classList.remove("highlight");
+                }, thisnote.duration * 1000 + thisnote.when * 1000);
+
+            }
+        }
+        var playmidi0 = function () {
+            if (midi_reader instanceof MIDIFile && song != {}) {
+                song.tracks.forEach(function (val, idx, arr) {
+                    val.notes.forEach(function (val1, idx1, arr1) {
+                        playmidi2(idx, idx1);
+                    });
+                });
+            }
+        }
+        Soundfont.instrument(ac, 'acoustic_grand_piano').then(function (instrumentnow) {
+            instrument = instrumentnow;
+            midi_reader = new MIDIFile();
+
+            loadFile = function () {
+                //Player.stop();
+                var file = document.querySelector('#myfile').files[0];
+                var reader = new FileReader();
+                if (file) reader.readAsArrayBuffer(file);
+                reader.addEventListener("load", function (event) {
+                    bool1 = 0;
+                    /*Player = new Urobot2011MIDIPlayerJS.Player(function (event) {
+                        playmidi(event);
+                        lesson_mode(event);
+                    });
+                    play();
+                    Player.loadArrayBuffer(reader.result);*/
+
+                    midi_reader.loadSong(event.target.result, false, function (param) {
+                        song = param.parseSong();
+                        playmidi0();
+                    });
+                });
+            }
+
+            loadDataUri = function (dataUri) {
+                bool1 = 0;
+                Player = new Urobot2011MIDIPlayerJS.Player(function (event) {
+                    playmidi(event);
+                    play();
+                });
+
+                Player.loadDataUri(dataUri);
+
+
+            }
+            document.querySelector('.sheet').classList.remove('loading');
+        });
+        function setBG(link) {
+            if (link === false) {
+                document.querySelector('.sheet').style.backgroundImage = ``;
+            }
+            document.querySelector('.sheet').style.backgroundImage = `url('${link}')`;
+        }
+        document.getElementById("setimg").addEventListener("click", function (ev) {
+            //document.querySelector('.sheet').style.backgroundImage = `url(${document.getElementById('img').value})`;
+            setBG(document.getElementById('img').value);
+        });
+        window.addEventListener("DOMContentLoaded", function (ev) {
+            document.querySelector('.piano').style.setProperty('--scaleX', window.innerWidth / document.querySelector('.piano_wrapper').clientWidth);
+            document.querySelector('.piano').style.setProperty('--new-width', document.querySelector('.piano_wrapper').clientWidth + 'px');
+        });
+        forchaco.addEventListener("change", function (ev) {
+            if (forchaco.checked) {
+                /*setBG('https://yt3.googleusercontent.com/ytc/AIdro_nkqBgHYalGfrq-BV9y5kRmb1Wuq-Tdx6sOocYcQA=s176-c-k-c0x00ffffff-no-rj');
+                document.querySelector('.sheet').style.backgroundSize='30%';
+                document.querySelector('.sheet').style.backgroundPosition='35%';
+                document.querySelector('.sheet').style.backgroundColor='#2f3e4d';
+                document.querySelector('.sheet').style.backgroundRepeat='no-repeat';*/
+                document.querySelector('.guest_profile img').setAttribute('src', 'https://yt3.googleusercontent.com/ytc/AIdro_nkqBgHYalGfrq-BV9y5kRmb1Wuq-Tdx6sOocYcQA=s176-c-k-c0x00ffffff-no-rj');
+            } else {
+                /*setBG(false);
+                document.querySelector('.sheet').style.backGroundSize='';
+                document.querySelector('.sheet').style.backgroundSize='';
+                document.querySelector('.sheet').style.backgroundPosition='';
+                document.querySelector('.sheet').style.backgroundColor='';
+                document.querySelector('.sheet').style.backgroundRepeat='';*/
+                document.querySelector('.guest_profile img').setAttribute('src', '');
+            }
+        });
+        cgrcssjs.styleAll();
+    </script>
+</body>
+
+</html>
