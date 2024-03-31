@@ -765,6 +765,14 @@
                     currKeys.splice(currKeys.indexOf(pitchnumbers[thisnote.pitch]));
                     instrument.stop(0, [currKeys2[pitchnumbers[thisnote.pitch]]]);
                     currKeys2[pitchnumbers[thisnote.pitch]] = false;
+                    if ((currKeys2[pitchnumbers[thisnote.pitch]] == false && (pitchnumbers[thisnote.pitch] == 'B3' || thisnote.pitch == 58))) {
+                        document.querySelector('.key.key_notebar[data-piano-code="B3"] *').remove();
+                        get_key_el("B3").classList.remove("highlight");
+                    }
+                    if (!get_key_el("B3").classList.contains("highlight")) {
+
+                        document.querySelector('.key.key_notebar[data-piano-code="B3"] *').remove();
+                    }
                 }, ((thisnote.duration * 1000) + (thisnote.when * 1000)) * (_1Minute / _PIANOTEMPO) * 1.25);
             }
             return [track, idx];
