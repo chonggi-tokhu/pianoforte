@@ -120,27 +120,34 @@
     <div class="body enablepopover">
         <div class="music" id="music">
             <div class="settings" id="settings">
-            <div class="input-group">
-                <p><span style="font-size:64%;font-weight:bold;">직접연주 설정 및 환경설정</span></p>
-                <input type="text" name="img" id="img" placeholder="background image">
-                <button class="btn btn-primary" id="setimg">set bg image</button>
-                <input type="checkbox" id="chaco"><label for="chaco">차커(차들어커피야) 전용 모드</label>
-                <button class="btn btn-primary" onclick="document.querySelector('.piano_wrapper').focus();">연주
-                    시작하기</button>
-                <p><span style="font-weight:bold;color:#c00538;text-decoration:line-through;">주의: 실제로는 한 옥타브 높습니다.<small><sup>현재로선 88건이 다 있으므로 해결된 문제</sup></small></span></p>
+                <div class="input-group">
+                    <p><span style="font-size:64%;font-weight:bold;">직접연주 설정 및 환경설정</span></p>
+                    <input type="text" name="img" id="img" placeholder="background image">
+                    <button class="btn btn-primary" id="setimg">set bg image</button>
+                    <input type="checkbox" id="chaco"><label for="chaco">차커(차들어커피야) 전용 모드</label>
+                    <button class="btn btn-primary" onclick="document.querySelector('.piano_wrapper').focus();">연주
+                        시작하기</button>
+                    <p><span style="font-weight:bold;color:#c00538;text-decoration:line-through;">주의: 실제로는 한 옥타브
+                            높습니다.<small><sup>현재로선 88건이 다 있으므로 해결된 문제</sup></small></span></p>
+                </div>
+                <div class="input-group">
+                    <p><span style="font-size:75%;">자동피아노 설정</span></p>
+                    <label><input type="file" name="myfile" id="myfile" style="display: none;"><button
+                            class="btn btn-primary"
+                            onclick="this.parentElement.querySelector('input[type=file]').click();">파일
+                            열기</button></label>
+                    <button class="btn btn-primary" onclick="if(typeof loadFile==='function') loadFile();">연 파일로
+                        연주하기</button>
+                    <button class="btn btn-primary" onclick="let_stopbool_true();">멈춤</button>
+                    <button class="btn btn-primary"
+                        onclick="let_stopbool_false();playmidi0(whetherithasnotplayedornot,currentTrackIdx,currentNoteIdx,currentNotesIdx);">다시
+                        연주</button>
+                    <input type="text" id="tempoinp" name="tempoinp" placeholder="TEMPO(how many 1/4s per 1 minute)">
+                    <button class="btn btn-primary"
+                        onclick="_PIANOTEMPO=(ColourgreyShorterJS.checkNumber(Number(document.getElementById('tempoinp').value)))?Number(document.getElementById('tempoinp').value):120">set
+                        tempo(if the value is not number, it becomes 120)</button>
+                </div>
             </div>
-            <div class="input-group">
-                <p><span style="font-size:75%;">자동피아노 설정</span></p>
-                <label><input type="file" name="myfile" id="myfile" style="display: none;"><button
-                        class="btn btn-primary"
-                        onclick="this.parentElement.querySelector('input[type=file]').click();">파일 열기</button></label>
-                <button class="btn btn-primary" onclick="if(typeof loadFile==='function') loadFile();">연 파일로
-                    연주하기</button>
-                <button class="btn btn-primary" onclick="let_stopbool_true();">멈춤</button>
-                <button class="btn btn-primary" onclick="let_stopbool_false();playmidi0(whetherithasnotplayedornot,currentTrackIdx,currentNoteIdx,currentNotesIdx);">다시 연주</button>
-                <input type="text" id="tempoinp" name="tempoinp" placeholder="TEMPO(how many 1/4s per 1 minute)">
-                <button class="btn btn-primary" onclick="_PIANOTEMPO=(ColourgreyShorterJS.checkNumber(document.getElementById('tempoinp').value))?Number(document.getElementById('tempoinp').value):120">set tempo(if the value is not number, it becomes 120)</button>
-            </div></div>
             <div class="guest_profile_wrapper" style="position:absolute;text-align:center;width:100%;">
                 <p class="guest_profile"><a href="https://www.youtube.com/@chaco_calculator"><img width="325"></a></p>
             </div>
@@ -360,19 +367,21 @@
                 </div>
             </div>
         </div>
-            <button class="btn btn-danger" onclick="alert('꼭 하지 말라면 오히려 꼭 더 하더라.');alert('무슨 스트라이샌드 효과냐?');for (var i = 0;i<400;i++){alert((400-i)+'번 남음');} alert('0번 남음');">누르지 마시오</button>
+        <button class="btn btn-danger"
+            onclick="alert('꼭 하지 말라면 오히려 꼭 더 하더라.');alert('무슨 스트라이샌드 효과냐?');for (var i = 0;i<400;i++){alert((400-i)+'번 남음');} alert('0번 남음');">누르지
+            마시오</button>
     </div>
     <script>
         var cgrcssjs = new ColourgreyShorterJS.ColourgreyShorterCSS(false);
         var Urobot2011MIDIPlayerJS = Urobot2011MIDIPlayerJS;
         var midi_reader = null;
         var song = {};
-        var stopbool=true;
-        var let_stopbool_false=function(){
-            stopbool=false;
+        var stopbool = true;
+        var let_stopbool_false = function () {
+            stopbool = false;
         }
-        var let_stopbool_true=function(){
-            stopbool=true;
+        var let_stopbool_true = function () {
+            stopbool = true;
         }
         var instrument;
         var loadFile, loadDataUri, Player;
@@ -389,8 +398,8 @@
         var keynotes = scalekeys;
         var notelengths = [];
         var _whites = 0;
-        var _PIANOTEMPO=120;
-        var _1Minute=60;
+        var _PIANOTEMPO = 120;
+        var _1Minute = 60;
         var pitchnumbers = {
             21: 'A0',
             22: 'A#0',
@@ -690,77 +699,82 @@
             }, start * 1000);*/
         }
         var playmidi2 = function (track, idx) {
-            if (stopbool===true){
+            if (stopbool === true) {
+                console.log(track + idx);
                 return [track, idx] || false;
             }
             if (midi_reader instanceof MIDIFile && song != {} && typeof track === 'number' && typeof idx === 'number') {
                 var thisnote = song.tracks[track].notes[idx];
+                console.log(thisnote.when * 1000 * (_1Minute / _PIANOTEMPO) * 1.5);
                 window.setTimeout(function () {
                     var newplaying = instrument.play(pitchnumbers[thisnote.pitch], 0, {});
                     bool2 = false;
                     currKeys2[pitchnumbers[thisnote.pitch]] = newplaying.id;
                     get_key_el(pitchnumbers[thisnote.pitch]).classList.add("highlight");
                     /*notebar_animation(pitchnumbers[thisnote.pitch], thisnote.when, thisnote.duration + thisnote.when);*/
-                }, thisnote.when * 1000 * (_1Minute / _PIANOTEMPO) * 2);
+                }, thisnote.when * 1000 * (_1Minute / _PIANOTEMPO) * 1.5);
                 window.setTimeout(function () {
                     bool2 = true;
                     currKeys.splice(currKeys.indexOf(pitchnumbers[thisnote.pitch]));
                     instrument.stop(0, [currKeys2[pitchnumbers[thisnote.pitch]]]);
                     currKeys2[pitchnumbers[thisnote.pitch]] = false;
                     get_key_el(pitchnumbers[thisnote.pitch]).classList.remove("highlight");
-                }, ((thisnote.duration * 1000) + (thisnote.when * 1000)) * (_1Minute / _PIANOTEMPO) * 2);
+                }, ((thisnote.duration * 1000) + (thisnote.when * 1000)) * (_1Minute / _PIANOTEMPO) * 1.5);
 
             }
-            return [track,idx];
+            return [track, idx];
         }
-        var currentTrackIdx=0;
-        var currentNotesIdx=[];
-        var currentNoteIdx=0;
-        var whetherithasnotplayedornot=true;
-        var playmidi0 = function (notplayedyet, trackp, idxp,idxesp) {
-            if (typeof notplayedyet !== 'boolean'){
+        var currentTrackIdx = 0;
+        var currentNotesIdx = [];
+        var currentNoteIdx = 0;
+        var whetherithasnotplayedornot = true;
+        var playmidi0 = function (notplayedyet, trackp, idxp, idxesp) {
+            if (typeof notplayedyet !== 'boolean') {
                 notplayedyet = true;
             }
             if (typeof trackp != 'number' || isNaN(trackp)) {
-                trackp=0;
+                trackp = 0;
             }
             if (typeof idxp != 'number' || isNaN(idxp)) {
-                idxp=0;
+                idxp = 0;
             }
-            if (!Array.isArray(idxesp)){
-                idxesp=[idxp];
+            if (!Array.isArray(idxesp)) {
+                idxesp = [idxp];
             }
             if (midi_reader instanceof MIDIFile && song != {}) {
                 if (notplayedyet) {
-                song.tracks.forEach(function (val, idx, arr) {
-                    var specialvar=false;
-                    val.notes.forEach(function (val1, idx1, arr1) {
-                        specialvar = playmidi2(idx, idx1);
-                        currentTrackIdx = specialvar[0];
-                        currentNoteIdx=specialvar[1];
-                        currentNotesIdx[currentTrackIdx]=currentNoteIdx;
-                        if (specialvar==false){
+                    song.tracks.forEach(function (val, idx, arr) {
+                        var specialvar = false;
+                        val.notes.forEach(function (val1, idx1, arr1) {
+                            specialvar = playmidi2(idx, idx1);
+                            currentTrackIdx = specialvar[0];
+                            currentNoteIdx = specialvar[1];
+                            currentNotesIdx[currentTrackIdx] = currentNoteIdx;
+                            if (specialvar == false) {
+                                console.log('aaa');
+                                return;
+                            }
+                        });
+                        if (specialvar == false) {
                             return;
                         }
                     });
-                    if (specialvar==false){
-                        return;
-                    }
-                }); } else {
-                    for (var i0j = trackp;i0j<song.tracks.length;i0j++){
+                } else {
+                    for (var i0j = trackp; i0j < song.tracks.length; i0j++) {
                         var val = song.tracks[i0j];
-                        var specialvar=false;
-                        for (var i1j = idxp;i1j<val.notes.length;i1j++){
+                        var specialvar = false;
+                        for (var i1j = idxp; i1j < val.notes.length; i1j++) {
                             var val1 = val.notes[i1j];
-                        specialvar = playmidi2(i0j, i1j);
-                        currentTrackIdx = specialvar[0];
-                        currentNoteIdx=specialvar[1];
-                        currentNotesIdx[currentTrackIdx]=currentNoteIdx;
-                            if (specialvar==false){
+                            specialvar = playmidi2(i0j, i1j);
+                            currentTrackIdx = specialvar[0];
+                            currentNoteIdx = specialvar[1];
+                            currentNotesIdx[currentTrackIdx] = currentNoteIdx;
+                            if (specialvar == false) {
+                                console.log('aaa');
                                 break;
                             }
                         }
-                        if (specialvar==false){
+                        if (specialvar == false) {
                             break;
                         }
                     }
@@ -787,9 +801,9 @@
 
                     midi_reader.loadSong(event.target.result, false, function (param) {
                         song = param.parseSong();
-                        var notplayedyet=whetherithasnotplayedornot;
-                        whetherithasnotplayedornot=false;
-                        playmidi0(notplayedyet,0, currentNoteIdx,[]);
+                        var notplayedyet = whetherithasnotplayedornot;
+                        whetherithasnotplayedornot = false;
+                        playmidi0(notplayedyet, 0, currentNoteIdx, []);
                     });
                 });
             }
