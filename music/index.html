@@ -139,7 +139,7 @@
                 <button class="btn btn-primary" onclick="let_stopbool_true();">멈춤</button>
                 <button class="btn btn-primary" onclick="let_stopbool_false();playmidi0(whetherithasnotplayedornot,currentTrackIdx,currentNoteIdx,currentNotesIdx);">다시 연주</button>
                 <input type="text" id="tempoinp" name="tempoinp" placeholder="TEMPO(how many 1/4s per 1 minute)">
-                <button class="btn btn-primary" onclick="_PIANOTEMPO=(checkNumber(document.getElementById('tempoinp').value))?Number(document.getElementById('tempoinp').value):120">set tempo(if the value is not number, it becomes 120)</button>
+                <button class="btn btn-primary" onclick="_PIANOTEMPO=(ColourgreyShorterJS.checkNumber(document.getElementById('tempoinp').value))?Number(document.getElementById('tempoinp').value):120">set tempo(if the value is not number, it becomes 120)</button>
             </div></div>
             <div class="guest_profile_wrapper" style="position:absolute;text-align:center;width:100%;">
                 <p class="guest_profile"><a href="https://www.youtube.com/@chaco_calculator"><img width="325"></a></p>
@@ -715,7 +715,7 @@
         }
         var currentTrackIdx=0;
         var currentNotesIdx=[];
-        var currnetNoteIdx=0;
+        var currentNoteIdx=0;
         var whetherithasnotplayedornot=true;
         var playmidi0 = function (notplayedyet, trackp, idxp,idxesp) {
             if (typeof notplayedyet !== 'boolean'){
