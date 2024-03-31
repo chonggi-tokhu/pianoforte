@@ -16,6 +16,7 @@
         :root {
             --sum-2-left: 1;
             --old-width: calc((59em) / 0.397);
+            --piano-bg-colour: #454545;
         }
 
         .keys {
@@ -55,25 +56,34 @@
             --scaleX: calc(1vw / 1em);
             --new-width: 100vw;
             --new-height: 0vh;
-            transform: scale(var(--scaleX)) translate(calc(100vw - var(--old-width)), 2.5em);
+            transform: scale(var(--scaleX)) translate(calc(100vw - var(--old-width)), 0em);
         }
 
+        .bg {
+            z-index: -5;
+            display: block;
+            background: var(--piano-bg-colour);
+            height: 100vh;
+            width: 100vw;
+            position: absolute;
+            top: 0vh;
+        }
 
         .piano_wrapper {
             width: fit-content;
             height: fit-content;
+            z-index: 2.5;
         }
 
         .sheet {
-            height: 45vh;
+            height: 12em;
             border: 1rem solid #623421;
             display: flex;
-            width: fit-content;
-            min-width: 100%;
+            width: min-content;
             --scaleX: calc(1vw / 1em);
             --new-width: 100vw;
             --new-height: 0vh;
-            transform: scale(var(--scaleX)) translate(calc(100vw - var(--old-width)), 2.5em);
+            transform: scale(var(--scaleX)) translate(calc(100vw - var(--old-width)), calc(12em * var(--scaleX)));
         }
 
         .loading::after {
@@ -92,22 +102,28 @@
         }
 
         .key.key_notebar {
+            text-align: center;
             background: unset !important;
         }
 
         .key.key_notebar.black {
 
+            width: 2em !important;
             position: absolute;
         }
 
         .key.key_notebar.white {
+            width: 3em !important;
             position: relative;
         }
 
         .key.key_notebar .notebar {
+            text-align: center;
+            width: 1em;
             background: #6060e0;
-            width: 0.5em;
             position: relative;
+            display: block;
+            z-index: -100 !important;
         }
 
         .guest_profile img[src=''] {
@@ -146,6 +162,8 @@
                     <button class="btn btn-primary"
                         onclick="_PIANOTEMPO=(ColourgreyShorterJS.checkNumber(Number(document.getElementById('tempoinp').value)))?Number(document.getElementById('tempoinp').value):120">set
                         tempo(if the value is not number, it becomes 120)</button>
+                    <p><span style="font-weight:bold;color:#c00538;">주의: A3음에 끝났는데도 계속 막대가
+                            남는 버그가 있을수 있습니다.</span></p>
                 </div>
             </div>
             <div class="guest_profile_wrapper" style="position:absolute;text-align:center;width:100%;">
@@ -176,7 +194,7 @@
                 <div class="key white" data-piano-code="A5" data-keyboard-key="4"></div>
                 <div class="key black" data-piano-code="A#5" data-keyboard-key="7"></div>
                 <div class="key white" data-piano-code="B5" data-keyboard-key="5"></div>
-                <div class="key white" data-piano-code="C6" data-keyboard-key="6"></div>
+                <div class="key white" data-piano-code="C6" data-keyboard-key="6"></div>-->
                 <div class="key key_notebar white" data-piano-code="A0"></div>
                 <div class="key key_notebar black" data-piano-code="A#0"></div>
                 <div class="key key_notebar white" data-piano-code="B0"></div>
@@ -264,7 +282,7 @@
                 <div class="key key_notebar white" data-piano-code="A7"></div>
                 <div class="key key_notebar black" data-piano-code="A#7"></div>
                 <div class="key key_notebar white" data-piano-code="B7"></div>
-                <div class="key key_notebar white" data-piano-code="C8"></div>-->
+                <div class="key key_notebar white" data-piano-code="C8"></div>
             </div>
             <div class="piano_wrapper" tabindex="0">
                 <div class="piano" id="piano">
@@ -366,6 +384,7 @@
                     </div>
                 </div>
             </div>
+            <!--<div class="bg"></div>-->
         </div>
         <button class="btn btn-danger"
             onclick="alert('꼭 하지 말라면 오히려 꼭 더 하더라.');alert('무슨 스트라이샌드 효과냐?');for (var i = 0;i<400;i++){alert((400-i)+'번 남음');} alert('0번 남음');">누르지
@@ -639,7 +658,24 @@
 
         var reset = function () {
         }
-
+        var notebar_animation2 = function (noteName, noteLength, begin) {
+            var notebarBG = document.querySelector('.key.key_notebar[data-piano-code="' + noteName + '"]');
+            if (!(notebarBG instanceof HTMLElement)) {
+                return false;
+            }
+            if (!currKeys2[noteName]) {
+                notebarBG.getElementsByTagName("p")[0].remove();
+                return false;
+            }
+            var notebar = notebarBG.appendChild(document.createElement('p'));
+            notebar.classList.add('notebar');
+            notebar.style.height = noteLength * 12 + 'em';
+            notebar.style.width = '1em';
+            notebar.animate([{ 'transform': 'translateY(0)' }, { 'transform': 'translateY(12em)' }], { duration: begin * 1000 + noteLength * 1000 });
+            if (!currKeys2[noteName]) {
+                notebar.remove();
+            }
+        }
         var notelengthunit = 10;
         var playmidi = function (event) {
             var note0 = document.querySelector('.sheet .key[data-piano-code="' + event.noteName + '"]');
@@ -705,22 +741,26 @@
             }
             if (midi_reader instanceof MIDIFile && song != {} && typeof track === 'number' && typeof idx === 'number') {
                 var thisnote = song.tracks[track].notes[idx];
-                console.log(thisnote.when * 1000 * (_1Minute / _PIANOTEMPO) * 1.5);
+                console.log(thisnote.when * 1000 * (_1Minute / _PIANOTEMPO) * 1.25);
                 window.setTimeout(function () {
                     var newplaying = instrument.play(pitchnumbers[thisnote.pitch], 0, {});
                     bool2 = false;
                     currKeys2[pitchnumbers[thisnote.pitch]] = newplaying.id;
                     get_key_el(pitchnumbers[thisnote.pitch]).classList.add("highlight");
                     /*notebar_animation(pitchnumbers[thisnote.pitch], thisnote.when, thisnote.duration + thisnote.when);*/
-                }, thisnote.when * 1000 * (_1Minute / _PIANOTEMPO) * 1.5);
+                    notebar_animation2(pitchnumbers[thisnote.pitch], thisnote.duration * (_1Minute / _PIANOTEMPO) * 1.25, thisnote.when * (_1Minute / _PIANOTEMPO) * 1.25 * 0);
+                    if (!currKeys(pitchnumbers[thisnote.pitch]) && (pitchnumbers[thisnote.pitch] == 'B3' || thisnote.pitch == 58)) {
+                        document.querySelector('.key.key_notebar[data-piano-code="B3"] *').remove();
+                    }
+                }, thisnote.when * 1000 * (_1Minute / _PIANOTEMPO) * 1.25);
                 window.setTimeout(function () {
+                    document.querySelector('.key.key_notebar[data-piano-code="' + pitchnumbers[thisnote.pitch] + '"] *').remove();
+                    get_key_el(pitchnumbers[thisnote.pitch]).classList.remove("highlight");
                     bool2 = true;
                     currKeys.splice(currKeys.indexOf(pitchnumbers[thisnote.pitch]));
                     instrument.stop(0, [currKeys2[pitchnumbers[thisnote.pitch]]]);
                     currKeys2[pitchnumbers[thisnote.pitch]] = false;
-                    get_key_el(pitchnumbers[thisnote.pitch]).classList.remove("highlight");
-                }, ((thisnote.duration * 1000) + (thisnote.when * 1000)) * (_1Minute / _PIANOTEMPO) * 1.5);
-
+                }, ((thisnote.duration * 1000) + (thisnote.when * 1000)) * (_1Minute / _PIANOTEMPO) * 1.25);
             }
             return [track, idx];
         }
@@ -834,6 +874,8 @@
         window.addEventListener("DOMContentLoaded", function (ev) {
             document.querySelector('.piano').style.setProperty('--scaleX', window.innerWidth / document.querySelector('.piano_wrapper').clientWidth);
             document.querySelector('.piano').style.setProperty('--new-width', document.querySelector('.piano_wrapper').clientWidth + 'px');
+            document.querySelector('.sheet').style.setProperty('--scaleX', window.innerWidth / document.querySelector('.piano_wrapper').clientWidth);
+            document.querySelector('.sheet').style.setProperty('--new-width', document.querySelector('.piano_wrapper').clientWidth + 'px');
         });
         forchaco.addEventListener("change", function (ev) {
             if (forchaco.checked) {
