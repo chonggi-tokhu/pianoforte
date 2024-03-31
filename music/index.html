@@ -701,14 +701,14 @@
                     currKeys2[pitchnumbers[thisnote.pitch]] = newplaying.id;
                     get_key_el(pitchnumbers[thisnote.pitch]).classList.add("highlight");
                     /*notebar_animation(pitchnumbers[thisnote.pitch], thisnote.when, thisnote.duration + thisnote.when);*/
-                }, thisnote.when * 1000 * (_1Minute / _PIANOTEMPO) * 2));
+                }, thisnote.when * 1000 * (_1Minute / _PIANOTEMPO) * 2);
                 window.setTimeout(function () {
                     bool2 = true;
                     currKeys.splice(currKeys.indexOf(pitchnumbers[thisnote.pitch]));
                     instrument.stop(0, [currKeys2[pitchnumbers[thisnote.pitch]]]);
                     currKeys2[pitchnumbers[thisnote.pitch]] = false;
                     get_key_el(pitchnumbers[thisnote.pitch]).classList.remove("highlight");
-                }, ((thisnote.duration * 1000) + (thisnote.when * 1000)) * (_1Minute / _PIANOTEMPO) * 2));
+                }, ((thisnote.duration * 1000) + (thisnote.when * 1000)) * (_1Minute / _PIANOTEMPO) * 2);
 
             }
             return [track,idx];
