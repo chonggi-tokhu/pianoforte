@@ -658,15 +658,32 @@
 
         var reset = function () {
         }
+        var noteLengths2 = {}
         var notebar_animation2 = function (noteName, noteLength, begin) {
             var notebarBG = document.querySelector('.key.key_notebar[data-piano-code="' + noteName + '"]');
             if (!(notebarBG instanceof HTMLElement)) {
                 return false;
             }
-            if (!currKeys2[noteName]) {
+            if (!currKeys2[noteName] && notebarBG.getElementsByTagName("p")[0] instanceof HTMLElement) {
                 notebarBG.getElementsByTagName("p")[0].remove();
                 return false;
             }
+            /*if ((currKeys2[noteName] == false && (noteName == 'B3'))) {
+                document.querySelector('.key.key_notebar[data-piano-code="B3"] *').remove();
+                get_key_el("B3").classList.remove("highlight");
+            }
+            if (!get_key_el("B3").classList.contains("highlight")) {
+
+                document.querySelector('.key.key_notebar[data-piano-code="B3"] *').remove();
+            }
+            if ((currKeys2[noteName] == false && (noteName == 'A3'))) {
+                document.querySelector('.key.key_notebar[data-piano-code="A3"] *').remove();
+                get_key_el("A3").classList.remove("highlight");
+            }
+            if (!get_key_el("A3").classList.contains("highlight")) {
+
+                document.querySelector('.key.key_notebar[data-piano-code="A3"] *').remove();
+            }*/
             var notebar = notebarBG.appendChild(document.createElement('p'));
             notebar.classList.add('notebar');
             notebar.style.height = noteLength * 12 + 'em';
@@ -748,30 +765,68 @@
                     currKeys2[pitchnumbers[thisnote.pitch]] = newplaying.id;
                     get_key_el(pitchnumbers[thisnote.pitch]).classList.add("highlight");
                     /*notebar_animation(pitchnumbers[thisnote.pitch], thisnote.when, thisnote.duration + thisnote.when);*/
-                    notebar_animation2(pitchnumbers[thisnote.pitch], thisnote.duration * (_1Minute / _PIANOTEMPO) * 1.25, thisnote.when * (_1Minute / _PIANOTEMPO) * 1.25 * 0.00001);
-                    if ((currKeys2[pitchnumbers[thisnote.pitch]] == false && (pitchnumbers[thisnote.pitch] == 'B3' || thisnote.pitch == 58))) {
+                    if ((currKeys2[pitchnumbers[thisnote.pitch]] == false && (pitchnumbers[thisnote.pitch] == 'B3' || thisnote.pitch == 58)) && document.querySelector('.key.key_notebar[data-piano-code="B3"] *') instanceof HTMLElement) {
                         document.querySelector('.key.key_notebar[data-piano-code="B3"] *').remove();
                         get_key_el("B3").classList.remove("highlight");
                     }
-                    if (!get_key_el("B3").classList.contains("highlight")) {
+                    if (!get_key_el("B3").classList.contains("highlight") && document.querySelector('.key.key_notebar[data-piano-code="B3"] *') instanceof HTMLElement) {
 
                         document.querySelector('.key.key_notebar[data-piano-code="B3"] *').remove();
                     }
+                    if ((currKeys2[pitchnumbers[thisnote.pitch]] == false && (pitchnumbers[thisnote.pitch] == 'A3' || thisnote.pitch == 57)) && document.querySelector('.key.key_notebar[data-piano-code="A3"] *') instanceof HTMLElement) {
+                        document.querySelector('.key.key_notebar[data-piano-code="A3"] *').remove();
+                        get_key_el("A3").classList.remove("highlight");
+                    }
+                    if (!get_key_el("A3").classList.contains("highlight") && document.querySelector('.key.key_notebar[data-piano-code="A3"] *') instanceof HTMLElement) {
+
+                        document.querySelector('.key.key_notebar[data-piano-code="A3"] *').remove();
+                    }
+                    if (document.querySelector('.key.key_notebar[data-piano-code="' + pitchnumbers[thisnote.pitch] + '"] *') == null) {
+                        notebar_animation2(pitchnumbers[thisnote.pitch], thisnote.duration * (_1Minute / _PIANOTEMPO) * 1.25, thisnote.when * (_1Minute / _PIANOTEMPO) * 1.25 * 0);
+                    }
+
+                    if ((currKeys2[pitchnumbers[thisnote.pitch]] == false && (pitchnumbers[thisnote.pitch] == 'B3' || thisnote.pitch == 58)) && document.querySelector('.key.key_notebar[data-piano-code="B3"] *') instanceof HTMLElement) {
+                        document.querySelector('.key.key_notebar[data-piano-code="B3"] *').remove();
+                        get_key_el("B3").classList.remove("highlight");
+                    }
+                    if (!get_key_el("B3").classList.contains("highlight") && document.querySelector('.key.key_notebar[data-piano-code="B3"] *') instanceof HTMLElement) {
+
+                        document.querySelector('.key.key_notebar[data-piano-code="B3"] *').remove();
+                    }
+                    if ((currKeys2[pitchnumbers[thisnote.pitch]] == false && (pitchnumbers[thisnote.pitch] == 'A3' || thisnote.pitch == 57)) && document.querySelector('.key.key_notebar[data-piano-code="A3"] *') instanceof HTMLElement) {
+                        document.querySelector('.key.key_notebar[data-piano-code="A3"] *').remove();
+                        get_key_el("A3").classList.remove("highlight");
+                    }
+                    if (!get_key_el("A3").classList.contains("highlight") && document.querySelector('.key.key_notebar[data-piano-code="A3"] *') instanceof HTMLElement) {
+
+                        document.querySelector('.key.key_notebar[data-piano-code="A3"] *').remove();
+                    }
                 }, thisnote.when * 1000 * (_1Minute / _PIANOTEMPO) * 1.25);
                 window.setTimeout(function () {
-                    document.querySelector('.key.key_notebar[data-piano-code="' + pitchnumbers[thisnote.pitch] + '"] *').remove();
+                    if (document.querySelector('.key.key_notebar[data-piano-code="' + pitchnumbers[thisnote.pitch] + '"] *') instanceof HTMLElement) {
+                        document.querySelector('.key.key_notebar[data-piano-code="' + pitchnumbers[thisnote.pitch] + '"] *').remove();
+                    }
+
                     get_key_el(pitchnumbers[thisnote.pitch]).classList.remove("highlight");
                     bool2 = true;
                     currKeys.splice(currKeys.indexOf(pitchnumbers[thisnote.pitch]));
                     instrument.stop(0, [currKeys2[pitchnumbers[thisnote.pitch]]]);
                     currKeys2[pitchnumbers[thisnote.pitch]] = false;
-                    if ((currKeys2[pitchnumbers[thisnote.pitch]] == false && (pitchnumbers[thisnote.pitch] == 'B3' || thisnote.pitch == 58))) {
+                    if ((currKeys2[pitchnumbers[thisnote.pitch]] == false && (pitchnumbers[thisnote.pitch] == 'B3' || thisnote.pitch == 58)) && document.querySelector('.key.key_notebar[data-piano-code="B3"] *') instanceof HTMLElement) {
                         document.querySelector('.key.key_notebar[data-piano-code="B3"] *').remove();
                         get_key_el("B3").classList.remove("highlight");
                     }
-                    if (!get_key_el("B3").classList.contains("highlight")) {
+                    if (!get_key_el("B3").classList.contains("highlight") && document.querySelector('.key.key_notebar[data-piano-code="B3"] *') instanceof HTMLElement) {
 
                         document.querySelector('.key.key_notebar[data-piano-code="B3"] *').remove();
+                    }
+                    if ((currKeys2[pitchnumbers[thisnote.pitch]] == false && (pitchnumbers[thisnote.pitch] == 'A3' || thisnote.pitch == 57)) && document.querySelector('.key.key_notebar[data-piano-code="A3"] *') instanceof HTMLElement) {
+                        document.querySelector('.key.key_notebar[data-piano-code="A3"] *').remove();
+                        get_key_el("A3").classList.remove("highlight");
+                    }
+                    if (!get_key_el("A3").classList.contains("highlight") && document.querySelector('.key.key_notebar[data-piano-code="A3"] *') instanceof HTMLElement) {
+
+                        document.querySelector('.key.key_notebar[data-piano-code="A3"] *').remove();
                     }
                 }, ((thisnote.duration * 1000) + (thisnote.when * 1000)) * (_1Minute / _PIANOTEMPO) * 1.25);
             }
