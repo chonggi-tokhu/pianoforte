@@ -162,7 +162,7 @@
                     <button class="btn btn-primary"
                         onclick="_PIANOTEMPO=(ColourgreyShorterJS.checkNumber(Number(document.getElementById('tempoinp').value)))?Number(document.getElementById('tempoinp').value):120">set
                         tempo(if the value is not number, it becomes 120)</button>
-                    <p><span style="font-weight:bold;color:#c00538;">주의: A3음에 끝났는데도 계속 막대가
+                    <p><span style="font-weight:bold;color:#c00538;">주의: B3음에 끝났는데도 계속 막대가
                             남는 버그가 있을수 있습니다.</span></p>
                 </div>
             </div>
@@ -231,9 +231,9 @@
                 <div class="key key_notebar black" data-piano-code="F#3" data-keyboard-key="b"></div>
                 <div class="key key_notebar white" data-piano-code="G3" data-keyboard-key="n"></div>
                 <div class="key key_notebar black" data-piano-code="G#3" data-keyboard-key="m"></div>
-                <div class="key key_notebar white" data-piano-code="A3" data-keyboard-key=","></div>
-                <div class="key key_notebar black" data-piano-code="A#3" data-keyboard-key="."></div>
-                <div class="key key_notebar white" data-piano-code="B3" data-keyboard-key="/"></div>
+                <div class="key key_notebar white" data-piano-code="A3"></div>
+                <div class="key key_notebar black" data-piano-code="A#3"></div>
+                <div class="key key_notebar white" data-piano-code="B3"></div>
                 <div class="key key_notebar white" data-piano-code="C4" data-keyboard-key="a"></div>
                 <div class="key key_notebar black" data-piano-code="C#4" data-keyboard-key="w"></div>
                 <div class="key key_notebar white" data-piano-code="D4" data-keyboard-key="s"></div>
@@ -748,8 +748,13 @@
                     currKeys2[pitchnumbers[thisnote.pitch]] = newplaying.id;
                     get_key_el(pitchnumbers[thisnote.pitch]).classList.add("highlight");
                     /*notebar_animation(pitchnumbers[thisnote.pitch], thisnote.when, thisnote.duration + thisnote.when);*/
-                    notebar_animation2(pitchnumbers[thisnote.pitch], thisnote.duration * (_1Minute / _PIANOTEMPO) * 1.25, thisnote.when * (_1Minute / _PIANOTEMPO) * 1.25 * 0);
-                    if (!currKeys(pitchnumbers[thisnote.pitch]) && (pitchnumbers[thisnote.pitch] == 'B3' || thisnote.pitch == 58)) {
+                    notebar_animation2(pitchnumbers[thisnote.pitch], thisnote.duration * (_1Minute / _PIANOTEMPO) * 1.25, thisnote.when * (_1Minute / _PIANOTEMPO) * 1.25 * 0.00001);
+                    if ((currKeys2[pitchnumbers[thisnote.pitch]] == false && (pitchnumbers[thisnote.pitch] == 'B3' || thisnote.pitch == 58))) {
+                        document.querySelector('.key.key_notebar[data-piano-code="B3"] *').remove();
+                        get_key_el("B3").classList.remove("highlight");
+                    }
+                    if (!get_key_el("B3").classList.contains("highlight")) {
+
                         document.querySelector('.key.key_notebar[data-piano-code="B3"] *').remove();
                     }
                 }, thisnote.when * 1000 * (_1Minute / _PIANOTEMPO) * 1.25);
