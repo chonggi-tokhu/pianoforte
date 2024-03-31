@@ -738,7 +738,7 @@
                         specialvar = playmidi2(idx, idx1);
                         currentTrackIdx = specialvar[0];
                         currentNoteIdx=specialvar[1];
-                        currnetNotesIdx[currnetTrackIdx]=currentNoteIdx;
+                        currentNotesIdx[currentTrackIdx]=currentNoteIdx;
                         if (!specialvar){
                             return;
                         }
@@ -755,7 +755,7 @@
                         specialvar = playmidi2(i0j, i1j);
                         currentTrackIdx = specialvar[0];
                         currentNoteIdx=specialvar[1];
-                        currnetNotesIdx[currnetTrackIdx]=currentNoteIdx;
+                        currentNotesIdx[currentTrackIdx]=currentNoteIdx;
                             if (!specialvar){
                                 break;
                             }
