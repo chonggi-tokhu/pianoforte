@@ -739,11 +739,11 @@
                         currentTrackIdx = specialvar[0];
                         currentNoteIdx=specialvar[1];
                         currentNotesIdx[currentTrackIdx]=currentNoteIdx;
-                        if (!specialvar){
+                        if (specialvar==false){
                             return;
                         }
                     });
-                    if (!specialvar){
+                    if (specialvar==false){
                         return;
                     }
                 }); } else {
@@ -756,11 +756,11 @@
                         currentTrackIdx = specialvar[0];
                         currentNoteIdx=specialvar[1];
                         currentNotesIdx[currentTrackIdx]=currentNoteIdx;
-                            if (!specialvar){
+                            if (specialvar==false){
                                 break;
                             }
                         }
-                        if (!specialvar){
+                        if (specialvar==false){
                             break;
                         }
                     }
