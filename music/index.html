@@ -896,8 +896,7 @@
                         val.notes.forEach(function (val1, idx1, arr1) {
                             
                             sustain = val1.sustain;
-                            specialvar = playmidi3(idx, idx1, withbar, function () { return _PIANOTEMPO }, val1.sustain);
-                            specialvar = playmidi2(idx, idx1, withbar);
+                            specialvar = playmidi2(idx, idx1, withbar,val.sustain);
                             currentTrackIdx = specialvar[0];
                             currentNoteIdx = specialvar[1];
                             currentNotesIdx[currentTrackIdx] = currentNoteIdx;
@@ -918,8 +917,7 @@
                             var val1 = val.notes[i1j];
                             
                             sustain = val1.sustain;
-                            specialvar = playmidi3(idx, idx1, withbar, function () { return _PIANOTEMPO }, val1.sustain);
-                            specialvar = playmidi2(i0j, i1j, withbar);
+                            specialvar = playmidi2(i0j, i1j, withbar,sustain);
                             currentTrackIdx = specialvar[0];
                             currentNoteIdx = specialvar[1];
                             currentNotesIdx[currentTrackIdx] = currentNoteIdx;
