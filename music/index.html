@@ -162,9 +162,6 @@
                     <button class="btn btn-primary"
                         onclick="_PIANOTEMPO=(ColourgreyShorterJS.checkNumber(Number(document.getElementById('tempoinp').value)))?Number(document.getElementById('tempoinp').value):120">set
                         tempo(if the value is not number, it becomes 120)</button>
-                    <p><span style="font-weight:bold;color:#c00538;">주의: B3음에 끝났는데도 계속 막대가
-                            남는 버그가 있을수 있습니다.</span></p>
-                    <input type="checkbox" id="hidebar"><label for="hidebar">막대 안보이기</label>
                 </div>
             </div>
             <div class=" guest_profile_wrapper" style="position:absolute;text-align:center;width:100%;">
@@ -708,7 +705,7 @@
                 return false;
             }
         }
-        var withbar = true;
+        var withbar = false;
         var notelengthunit = 10;
         var playmidi = function (event) {
             var note0 = document.querySelector('.sheet .key[data-piano-code="' + event.noteName + '"]');
