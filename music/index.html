@@ -920,7 +920,7 @@
                         val.notes.forEach(function (val1, idx1, arr1) {
                             
                             sustain = val1.sustain;
-                            specialvar = playmidi2(idx, idx1, withbar,val.sustain);
+                            specialvar = playmidi2(idx, idx1, withbar,val1.sustain);
                             currentTrackIdx = specialvar[0];
                             currentNoteIdx = specialvar[1];
                             currentNotesIdx[currentTrackIdx] = currentNoteIdx;
