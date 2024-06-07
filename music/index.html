@@ -571,9 +571,13 @@
         }
         document.querySelector('.piano_wrapper').addEventListener("keydown", function (e) {
             e.preventDefault();
+            var newpedal=false;
             if (e.code=='Digit8'){
                 pedal=1;
-                return;
+                newpedal=true;
+            }
+            if (newpedal){
+                key='';
             }
             if (!keyboards2.includes(e.key)) {
                 return false;
@@ -596,13 +600,18 @@
         });
 
         document.querySelector('.piano_wrapper').addEventListener("keyup", function (e) {
+            var newpedal=false;
             if (e.code=='Digit8'){
                 pedal=0;
-                return;
+                newpedal=true;
+            }
+            if (newpedal){
+                key='';
             }
             if (!keyboards2.includes(e.key)) {
                 return false;
             }
+            
             var key = notetonote(keyboardtonote(e.key));
             key = keyboardtonote(e.key);
             bool2 = true;
