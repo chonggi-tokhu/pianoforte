@@ -23,6 +23,14 @@
             display: flex;
         }
 
+        .white.highlight.pedal {
+            background: #f05578 !important;
+        }
+
+        .black.highlight.pedal {
+            background: #c00538 !important;
+        }
+
         .keys .key.white {
             height: 12em;
             width: 3em;
@@ -563,6 +571,10 @@
         }
         document.querySelector('.piano_wrapper').addEventListener("keydown", function (e) {
             e.preventDefault();
+            if (e.code=='Digit8'){
+                pedal=1;
+                return;
+            }
             if (!keyboards2.includes(e.key)) {
                 return false;
             }
@@ -584,6 +596,10 @@
         });
 
         document.querySelector('.piano_wrapper').addEventListener("keyup", function (e) {
+            if (e.code=='Digit8'){
+                pedal=0;
+                return;
+            }
             if (!keyboards2.includes(e.key)) {
                 return false;
             }
