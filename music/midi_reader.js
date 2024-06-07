@@ -1000,7 +1000,8 @@ MIDIFile.prototype.startNote = function (event, song) {
         when: event.playTime / 1000,
         pitch: event.param1,
         duration: 0.0000001,
-        slides: []
+        slides: [],
+        sustain: event.sustain
     });
 }
 MIDIFile.prototype.closeNote = function (event, song) {
@@ -1114,6 +1115,8 @@ MIDIFile.prototype.parseSong = function () {
         tracks: [],
         beats: []
     };
+    var sustain = false;
+    var currnoteidx = 0;
     var events = this.getMidiEvents();
     console.log(events);
     for (var i = 0; i < events.length; i++) {
@@ -1131,7 +1134,10 @@ MIDIFile.prototype.parseSong = function () {
             } else {
                 if (events[i].param1 >= 0 && events[i].param1 <= 127) {
                     //console.log('start', events[i].param1);
+                    song.sustain = sustain;
+                    events[i].sustain = sustain;
                     this.startNote(events[i], song);
+                    currnoteidx++
                 } else {
                     console.log('wrong tone', events[i]);
                 }
@@ -1152,6 +1158,15 @@ MIDIFile.prototype.parseSong = function () {
                     }
                 } else {
                     if (events[i].subtype == MIDIEvents.EVENT_MIDI_CONTROLLER) {
+                        if (events[i].param1 == 0x40) {
+                            if (events[i].param2 >= 64) {
+                                sustain = true;
+                            }
+                            if (events[i].param2 <= 63) {
+                                console.log('pedal off');
+                                sustain = false;
+                            }
+                        }
                         if (events[i].param1 == 7) {
                             if (events[i].channel != 9) {
                                 var track = this.takeTrack(events[i].channel, song);
@@ -1161,6 +1176,7 @@ MIDIFile.prototype.parseSong = function () {
                         } else {
                             //console.log('controller', events[i]);
                         }
+                        console.log(events[i])
                     } else {
                         if (events[i].subtype == MIDIEvents.EVENT_MIDI_PITCH_BEND) {
                             //console.log('	bend', events[i].channel, events[i].param1, events[i].param2);
