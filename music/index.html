@@ -516,6 +516,7 @@
             108: 'B7',
             109: 'C8',
         }
+        var pedal = 0;
         var forchaco = document.getElementById("chaco");
         var guest_profile = document.getElementById("guest_profile");
         var _black_and_white = document.querySelectorAll(`.keys .key[data-piano-code]`);
@@ -537,12 +538,18 @@
                 bool2 = false;
                 currKeys2[val.getAttribute("data-piano-code")] = a.id;
                 get_key_el(val.getAttribute("data-piano-code")).classList.add("highlight");
+                if (pedal==1){
+                    get_key_el(val.getAttribute("data-piano-code")).classList.add("pedal");
+                }
             });
             val.addEventListener("mouseup", function (e) {
                 bool2 = true;
                 instrument.stop(0, [currKeys2[val.getAttribute("data-piano-code")]]);
                 currKeys2[val.getAttribute("data-piano-code")] = false;
                 get_key_el(val.getAttribute("data-piano-code")).classList.remove("highlight");
+                if (pedal==0){
+                get_key_el(val.getAttribute("data-piano-code")).classList.remove("pedal");
+                }
             });
         });
         var _whites2 = 0;
@@ -565,7 +572,6 @@
         ac.length = 50;
         var currKeys = [];
         var currKeys2 = {};
-        var pedal = 0;
         function get_key_el(note) {
             return document.querySelector('.keys .key[data-piano-code="' + note + '"]');
         }
@@ -596,6 +602,9 @@
             bool2 = false;
             currKeys2[key] = a.id;
             get_key_el(key).classList.add("highlight");
+            if (pedal==1){
+            get_key_el(key).classList.add("pedal");
+            }
             e.preventDefault();
         });
 
@@ -619,6 +628,9 @@
             instrument.stop(0, [currKeys2[key]]);
             currKeys2[key] = false;
             get_key_el(key).classList.remove("highlight");
+            if (pedal==0){
+            get_key_el(key).classList.remove("pedal");
+            }
         });
 
         var keyboards2 = [" ", "ArrowLeft", "ArrowRight", "0", "z", "x", "c", "v", "b", "n", "m", ",", ".", "/", "1", "2", "a", "s", "d", "f", "g", "h", "j", "k", "l", ";", "'", "Enter", "4", "5", "6", "+", "w", "e", "t", "y", "u", "o", "p", "]", "\\", "7", "9"];
