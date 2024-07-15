@@ -1,10 +1,10 @@
 @font-face {
   font-family: 'icomoon';
-  src:  url('./fonts/icomoon.eot?lko820');
-  src:  url('./fonts/icomoon.eot?lko820#iefix') format('embedded-opentype'),
-    url('./fonts/icomoon.ttf?lko820') format('truetype'),
-    url('./fonts/icomoon.woff?lko820') format('woff'),
-    url('./fonts/icomoon.svg?lko820#icomoon') format('svg');
+  src:  url('fonts/icomoon.eot?81ivfq');
+  src:  url('fonts/icomoon.eot?81ivfq#iefix') format('embedded-opentype'),
+    url('fonts/icomoon.ttf?81ivfq') format('truetype'),
+    url('fonts/icomoon.woff?81ivfq') format('woff'),
+    url('fonts/icomoon.svg?81ivfq#icomoon') format('svg');
   font-weight: normal;
   font-style: normal;
   font-display: block;
@@ -25,25 +25,6 @@
   -moz-osx-font-smoothing: grayscale;
 }
 
-.icon-Notes_240715_122346 .path1:before {
-  content: "\1f1e9";
-  color: rgb(255, 215, 0);
-}
-.icon-Notes_240715_122346 .path2:before {
-  content: "\1f1ea";
-  margin-left: -1em;
-  color: rgb(255, 0, 0);
-}
-.icon-Notes_240715_122346 .path3:before {
-  content: "\1f1eb";
-  margin-left: -1em;
-  color: rgb(0, 0, 0);
-}
-.icon-Notes_240715_122346 .path4:before {
-  content: "\1f1ec";
-  margin-left: -1em;
-  color: rgb(0, 0, 0);
-}
-.icon-Notes_240715_125116:before {
-  content: "\e904";
+.icon-narairumhan2:before {
+  content: "\97d3";
 }
