@@ -1,0 +1,64 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="utf-8">
+<title>html TEST</title><script src="https://code.jquery.com/jquery-3.6.3.js"></script>
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.10.0/styles/default.min.css">
+<script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.10.0/highlight.min.js"></script>
+<!-- and it's easy to individually load additional languages -->
+<script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.10.0/languages/go.min.js"></script>
+    <script
+        src="https://chonggi-tokhu.github.io/svg_to_video/google_translate_meme_maker/ColourgreyShorterCSSJS.js"></script>
+    <link rel="stylesheet"
+        href="https://chonggi-tokhu.github.io/svg_to_video/google_translate_meme_maker/ColourgreyShorter.css">
+<style>
+textinp{
+width:60vw;
+height:20vh;
+border:1px solid #080808;
+font-size:16px:
+}
+</style>
+</head>
+<body>
+<div>
+<div style="display:flex;">
+<iframe id="myframe" style="width:40vw;"></iframe>
+<textinp contenteditable="true"></textinp>
+<div id="codearea">
+<pre>
+<code class="language-html hljs">&lt;p&gt;HELLO_WORLD&lt;/p&gt;</code>
+</pre>
+</div>
+</div>
+<button type="button" id="myBtn">RUN</button class="btn btn-primary">
+</div>
+<script>
+var textinp=document.querySelector('textinp');
+var myframe=document.querySelector('iframe#myframe');
+var myBtn=document.querySelector('button#myBtn');
+function htmlFunc(param){
+param=new String(param);
+return param.replaceAll('&lt;',`<`).replaceAll('&gt;',`>`).replaceAll('&apos;',`'`).replaceAll('&quot;',`"`);
+}
+function highlightFunc(){
+document.querySelectorAll('pre code').forEach((el,idx)=>{
+hljs.highlightElement(el);
+});
+hljs.highlightAll();
+}
+var runFunc=(ev)=>{
+myframe.srcdoc= /*htmlFunc(textinp.innerText);*/ textinp.innerText;
+highlightFunc();
+}
+textinp.addEventListener('keyup',function(ev){
+document.querySelectorAll('pre code').forEach((el,idx)=>{
+el.innerHTML=hljs.highlight(textinp.innerText,{language: 'html'}).value;
+});
+highlightFunc();
+});
+myBtn.addEventListener('click',runFunc);
+runFunc();
+</script>
+</body>
+</html>
