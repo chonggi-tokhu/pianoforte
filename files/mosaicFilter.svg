@@ -10,5 +10,5 @@
   </filter> 
   </defs>
   
-  <circle cx="170" cy="60" r="50" fill="green" filter="url(#mosaic)" />
+  <circle cx="0%" cy="0%" r="50" fill="green" filter="url(#mosaic)" />
 </svg>
