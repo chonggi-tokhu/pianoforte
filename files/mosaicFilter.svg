@@ -1,4 +1,5 @@
 <svg width="230" height="120" xmlns="http://www.w3.org/2000/svg">
+  <!-- https://stackoverflow.com/questions/37451189/can-one-pixelate-images-with-an-svg-filter -->
   <defs> 
     <filter id="mosaic" x="0%" y="0%" width="1000" height="1000"> <!--Thanks to Zoltan Fegyver for figuring out pixelation and producing the awesome pixelation map. --> 
     <feGaussianBlur stdDeviation="2" in="SourceGraphic" result="smoothed" />
