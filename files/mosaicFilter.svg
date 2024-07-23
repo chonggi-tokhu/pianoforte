@@ -1,4 +1,4 @@
-<svg width="1000" height="1000" xmlns="http://www.w3.org/2000/svg">
+<svg width="600" height="600" xmlns="http://www.w3.org/2000/svg">
   <!-- https://stackoverflow.com/questions/37451189/can-one-pixelate-images-with-an-svg-filter -->
   <defs> 
     <filter id="mosaic" x="0%" y="0%" width="1000" height="1000"> <!--Thanks to Zoltan Fegyver for figuring out pixelation and producing the awesome pixelation map. --> 
@@ -9,6 +9,6 @@
     <feComposite operator="in" in2="SourceGraphic"/> 
   </filter> 
   </defs>
-  <image href="./AK47.png" width="810" height="600" preserveAspectRatio="xMidYMid meet" filter="url(#mosaic)" />
+  <image href="./AK47.png" width="400" height="400" preserveAspectRatio="xMidYMid meet" filter="url(#mosaic)" />
   <circle cx="50" cy="50" r="50" fill="green" filter="url(#mosaic)" />
 </svg>
