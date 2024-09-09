@@ -1,0 +1,997 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>player</title>
+    <script src="https://chonggi-tokhu.github.io/pianoforte/soundfont-player-js/player.js"></script>
+    <script src="./midi_reader.js"></script>
+    <script src="https://code.jquery.com/jquery-3.6.3.js"></script>
+    <script
+        src="https://chonggi-tokhu.github.io/svg_to_video/google_translate_meme_maker/ColourgreyShorterCSSJS.js"></script>
+    <link rel="stylesheet"
+        href="https://chonggi-tokhu.github.io/svg_to_video/google_translate_meme_maker/ColourgreyShorter.css">
+    <style>
+        :root {
+            --sum-2-left: 1;
+            --old-width: calc((59em) / 0.397);
+            --piano-bg-colour: #454545;
+        }
+
+        .keys {
+            display: flex;
+        }
+
+        .keys .key.white {
+            font-size: inherit;
+            height: 12em;
+            width: 3em;
+            position: relative;
+            background: #e0e8f0;
+            border: 1px solid #051315;
+            color: #051315;
+            z-index: 10;
+        }
+
+        .keys .key.black {
+            font-size: inherit;
+            height: 6em;
+            width: 2em;
+            position: absolute;
+            background: #051315;
+            border-left: 1px solid #e0e8f0;
+            border-right: 1px solid #e0e8f0;
+            border-bottom: 1px solid #051315;
+            z-index: 20;
+            color: #e0e8f0;
+        }
+
+        .keys .key p {
+            position: relative;
+            bottom: calc(4em - 100%);
+        }
+
+        .piano {
+            font-size: inherit;
+            border: 1rem solid #623421;
+            width: min-content;
+            /*--scaleX: calc(1vw / 1em);
+            --new-width: 100vw;
+            --new-height: 0vh;
+            transform: scale(var(--scaleX)) translate(calc(100vw - var(--old-width)), -45em);*/
+        }
+
+        .bg {
+            z-index: -5;
+            display: block;
+            background: var(--piano-bg-colour);
+            height: 100vh;
+            width: 100vw;
+            position: absolute;
+            top: 0vh;
+        }
+
+        .piano_wrapper {
+            width: fit-content;
+            height: fit-content;
+            z-index: 2.5;
+            font-size: 50%;
+        }
+
+        .sheet {
+            height: 30em;
+            border: 1rem solid #623421;
+            display: flex;
+            width: fit-content;
+            /*--scaleX: calc(1vw / 1em);
+            --new-width: 100vw;
+            --new-height: 0vh;
+            transform: scale(var(--scaleX)) translate(calc(100vw - var(--old-width)), calc(-27em * var(--scaleX)));*/
+            background-size: cover;
+            background-position: center;
+            font-size: 50%;
+        }
+
+        .loading::after {
+            content: 'LOADING...';
+            font-size: 480%;
+            text-align: center;
+            width: 100%;
+        }
+
+        .piano_tile.white {
+
+            background: #e0e8f0;
+            border: 1px solid #051315;
+            color: #051315;
+        }
+
+        .piano_tile.black {
+
+            background: #051315;
+            border: 1px solid #e0e8f0;
+            color: #e0e8f0;
+        }
+
+        .piano_tile.white.highlight {
+            background: #80a0e0 !important;
+        }
+
+        .piano_tile.black.highlight {
+            background: #204070 !important;
+        }
+
+        .white.highlight.pedal {
+            background: #f05578 !important;
+        }
+
+        .black.highlight.pedal {
+            background: #c00538 !important;
+        }
+
+        .key.key_notebar {
+            text-align: center;
+            background: unset !important;
+            font-size: inherit !important;
+        }
+
+        .key.key_notebar.black {
+
+            width: 2em !important;
+            position: absolute;
+        }
+
+        .key.key_notebar.white {
+            width: 3em !important;
+            position: relative;
+        }
+
+        .key.key_notebar .notebar {
+            text-align: center;
+            width: 1em;
+            background: #6060e0;
+            position: relative;
+            display: block;
+            z-index: -100 !important;
+        }
+
+        .guest_profile img[src=''] {
+            display: none;
+        }
+
+        .piano_tiles {
+            width: 90vw;
+        }
+
+        .piano_tiles .piano_tiles_row {
+            height: 12vw;
+        }
+
+        .piano_tiles .piano_tiles_row .piano_tile {
+            width: 13vw;
+            margin: 1vw;
+            height: inherit;
+        }
+    </style>
+</head>
+
+<body>
+    <div class="body enablepopover">
+        <div class="music" id="music">
+            <div class="piano_tiles">
+                <div style="display:flex;" class="piano_tiles_row">
+                    <div data-mobile-piano="G3" class="piano_tile white"></div>
+                    <div data-mobile-piano="G#3" class="piano_tile black"></div>
+                    <div data-mobile-piano="A3" class="piano_tile white"></div>
+                    <div data-mobile-piano="A#3" class="piano_tile black"></div>
+                    <div data-mobile-piano="B3" class="piano_tile white"></div>
+                    <div data-mobile-piano="C4" class="piano_tile white"></div>
+                </div>
+                <div style="display:flex;" class="piano_tiles_row">
+                    <div data-mobile-piano="C#4" class="piano_tile black"></div>
+                    <div data-mobile-piano="D4" class="piano_tile white"></div>
+                    <div data-mobile-piano="D#4" class="piano_tile black"></div>
+                    <div data-mobile-piano="E4" class="piano_tile white"></div>
+                    <div data-mobile-piano="F4" class="piano_tile white"></div>
+                    <div data-mobile-piano="F#4" class="piano_tile black"></div>
+                </div>
+                <div style="display:flex;" class="piano_tiles_row">
+                    <div data-mobile-piano="G4" class="piano_tile white"></div>
+                    <div data-mobile-piano="G#4" class="piano_tile black"></div>
+                    <div data-mobile-piano="A4" class="piano_tile white"></div>
+                    <div data-mobile-piano="A#4" class="piano_tile black"></div>
+                    <div data-mobile-piano="B4" class="piano_tile white"></div>
+                    <div data-mobile-piano="C5" class="piano_tile white"></div>
+                </div>
+                <div style="display:flex;" class="piano_tiles_row">
+                    <div data-mobile-piano="C#5" class="piano_tile black"></div>
+                    <div data-mobile-piano="D5" class="piano_tile white"></div>
+                    <div data-mobile-piano="D#5" class="piano_tile black"></div>
+                    <div data-mobile-piano="E5" class="piano_tile white"></div>
+                    <div data-mobile-piano="F5" class="piano_tile white"></div>
+                    <div data-mobile-piano="F#5" class="piano_tile black"></div>
+                </div>
+            </div>
+            <div style="z-index: 9999;height: 100vh;background: lightgrey;">
+
+                <audio controls="controls"></audio>
+                <input type="range" name="rangeinp" id="rangeinp" min="0" max="100" value="0">
+            </div>
+            <!--<div class="bg"></div>-->
+        </div>
+        <button class="btn btn-danger"
+            onclick="alert('꼭 하지 말라면 오히려 꼭 더 하더라.');alert('무슨 스트라이샌드 효과냐?');for (var i = 0;i<400;i++){alert((400-i)+'번 남음');} alert('0번 남음');">누르지
+            마시오</button>
+    </div>
+    <script>
+        var cgrcssjs = new ColourgreyShorterJS.ColourgreyShorterCSS(false);
+        var Urobot2011MIDIPlayerJS = Urobot2011MIDIPlayerJS;
+        var midi_reader = null;
+        var song = {};
+        var stopbool = true;
+        var let_stopbool_false = function () {
+            stopbool = false;
+        }
+        var let_stopbool_true = function () {
+            stopbool = true;
+        }
+        var instrument;
+        var loadFile, loadDataUri, Player;
+        var AudioContext = window.AudioContext || window.webkitAudioContext || false;
+        var my_audio = document.getElementsByTagName("audio")[0];
+        var ac = new AudioContext || new webkitAudioContext;
+        var ac_2 = ac.createMediaElementSource(my_audio);
+        var ac_3 = ac_2.context;
+        /*my_audio.addEventListener("loadeddata", function (ev) {
+            var ac_4 = my_audio.parentElement.appendChild(ac_2.mediaElement);
+            my_audio.remove();
+            my_audio = ac_4;
+        });*/
+        var scalekeys = ["C0", "C#0", "Db0", "D0", "D#0", "Eb0", "E0", "F0", "F#0", "Gb0", "G0", "G#0", "Ab0", "A0", "A#0", "Bb0", "B0", "C1", "C#1", "Db1", "D1", "D#1", "Eb1", "E1", "F1", "F#1", "Gb1", "G1", "G#1", "Ab1", "A1", "A#1", "Bb1", "B1", "C2", "C#2", "Db2", "D2", "D#2", "Eb2", "E2", "F2", "F#2", "Gb2", "G2", "G#2", "Ab2", "A2", "A#2", "Bb2", "B2", "C3", "C#3", "Db3", "D3", "D#3", "Eb3", "E3", "F3", "F#3", "Gb3", "G3", "G#3", "Ab3", "A3", "A#3", "Bb3", "B3", "C4", "C#4", "Db4", "D4", "D#4", "Eb4", "E4", "F4", "F#4", "Gb4", "G4", "G#4", "Ab4", "A4", "A#4", "Bb4", "B4", "C5", "C#5", "Db5", "D5", "D#5", "Eb5", "E5", "F5", "F#5", "Gb5", "G5", "G#5", "Ab5", "A5", "A#5", "Bb5", "B5", "C6", "C#6", "Db6", "D6", "D#6", "Eb6", "E6", "F6", "F#6", "Gb6", "G6", "G#6", "Ab6", "A6", "A#6", "Bb6", "B6", "C7", "C#7", "Db7", "D7", "D#7", "Eb7", "E7", "F7", "F#7", "Gb7", "G7", "G#7", "Ab7", "A7", "A#7", "Bb7", "B7", "C8"];
+        var currentTime;
+        var timeoutId;
+        var timeoutId2;
+        var timeoutId3;
+        var bool1 = 0;
+        var bool2 = true;
+        var tempo = 50;
+        var keynotes = scalekeys;
+        var notelengths = [];
+        var _whites = 0;
+        var _PIANOTEMPO = 120;
+        var _1Minute = 60;
+        var pitchnumbers = {
+            21: 'A0',
+            22: 'A#0',
+            23: 'B0',
+            24: 'C1',
+            25: 'C#1',
+            26: 'D1',
+            27: 'D#1',
+            28: 'E1',
+            29: 'F1',
+            30: 'F#1',
+            31: 'G1',
+            32: 'G#1',
+            33: 'A1',
+            34: 'A#1',
+            35: 'B1',
+            36: 'C2',
+            37: 'C#2',
+            38: 'D2',
+            39: 'D#2',
+            40: 'E2',
+            41: 'F2',
+            42: 'F#2',
+            43: 'G2',
+            44: 'G#2',
+            45: 'A2',
+            46: 'A#2',
+            47: 'B2',
+            48: 'C3',
+            49: 'C#3',
+            50: 'D3',
+            51: 'D#3',
+            52: 'E3',
+            53: 'F3',
+            54: 'F#3',
+            55: 'G3',
+            56: 'G#3',
+            57: 'A3',
+            58: 'A#3',
+            59: 'B3',
+            60: 'C4',
+            61: 'C#4',
+            62: 'D4',
+            63: 'D#4',
+            64: 'E4',
+            65: 'F4',
+            66: 'F#4',
+            67: 'G4',
+            68: 'G#4',
+            69: 'A4',
+            70: 'A#4',
+            71: 'B4',
+            72: 'C5',
+            73: 'C#5',
+            74: 'D5',
+            75: 'D#5',
+            76: 'E5',
+            77: 'F5',
+            78: 'F#5',
+            79: 'G5',
+            80: 'G#5',
+            81: 'A5',
+            82: 'A#5',
+            83: 'B5',
+            84: 'C6',
+            85: 'C#6',
+            86: 'D6',
+            87: 'D#6',
+            88: 'E6',
+            89: 'F6',
+            90: 'F#6',
+            91: 'G6',
+            92: 'G#6',
+            93: 'A6',
+            94: 'A#6',
+            95: 'B6',
+            96: 'C7',
+            97: 'C#7',
+            98: 'D7',
+            99: 'D#7',
+            100: 'E7',
+            101: 'F7',
+            102: 'F#7',
+            103: 'G7',
+            104: 'G#7',
+            105: 'A7',
+            107: 'A#7',
+            108: 'B7',
+            109: 'C8',
+        }
+        var sustain = false;
+        var _black_and_white = document.querySelectorAll(`.keys .key[data-piano-code]`);
+        _black_and_white.forEach(function (val, idx, arr) {
+            if (val.classList.contains("black")) {
+                val.style.left = `calc(${_whites} * 3em + 1.0em)`;
+                val.innerHTML = `<p><span style="font-weight:bold;">${val.getAttribute("data-piano-code")}</span><br /><span style="font-size:65%;">'${val.getAttribute("data-keyboard-key")}'</span></p>`;
+            } else {
+                _whites++;
+                val.innerHTML = `<p><span style="font-weight:bold;">${val.getAttribute("data-piano-code")}</span><br /><span style="font-size:65%;">computer '${val.getAttribute("data-keyboard-key")}'</span></p>`;
+            }
+            val.addEventListener("mousedown", function (e) {
+                var optsobj = { duration: 100000 };
+                if (pedal == 1) {
+                    optsobj['adsr'] = ['sustain'];
+                }
+                var a = instrument.play(val.getAttribute("data-piano-code", 0, optsobj));
+                /*console.log(a);*/
+                bool2 = false;
+                currKeys2[val.getAttribute("data-piano-code")] = a.id;
+                get_key_el(val.getAttribute("data-piano-code")).classList.add("highlight");
+            });
+            val.addEventListener("mouseup", function (e) {
+                bool2 = true;
+                instrument.stop(0, [currKeys2[val.getAttribute("data-piano-code")]]);
+                currKeys2[val.getAttribute("data-piano-code")] = false;
+                get_key_el(val.getAttribute("data-piano-code")).classList.remove("highlight");
+            });
+        });
+        var _whites2 = 0;
+        var _notebar_BNW = document.querySelectorAll(`.key.key_notebar`);
+        _notebar_BNW.forEach(function (val, idx, arr) {
+            if (val.classList.contains("black")) {
+                val.style.left = `calc(${_whites2} * 3em + 1.0em)`;
+            } else {
+                _whites2++;
+            }
+        });
+        /*var _black_and_white2 = document.querySelectorAll(`.sheet .key[data-piano-code]`);
+        _black_and_white2.forEach(function (val, idx, arr) {
+            if (val.classList.contains("black")) {
+                val.style.left = `calc(${_whites} * 3em - 1em)`;
+            } else {
+                _whites++;
+            }
+        });*/
+        ac.length = 50;
+        var currKeys = [];
+        var currKeys2 = {};
+        var pedal = 0;
+        document.querySelectorAll(".piano_tile").forEach((el, key, parel) => {
+            el.innerHTML = el.getAttribute("data-mobile-piano");
+            el.addEventListener("touchstart", (ev) => {
+                var optsobj = { duration: 100000 };
+                var a = instrument.play(el.getAttribute("data-mobile-piano", 0, optsobj));
+                /*console.log(a);*/
+                bool2 = false;
+                currKeys2[el.getAttribute("data-mobile-piano")] = a.id;
+                get_key_el(el.getAttribute("data-mobile-piano")).classList.add("highlight");
+            });
+            el.addEventListener("touchend", (ev) => {
+                bool2 = true;
+                instrument.stop(0, [currKeys2[el.getAttribute("data-mobile-piano")]]);
+                currKeys2[el.getAttribute("data-mobile-piano")] = false;
+                get_key_el(el.getAttribute("data-mobile-piano")).classList.remove("highlight");
+            });
+            el.addEventListener("mousedown", (ev) => {
+                var optsobj = { duration: 100000 };
+                var a = instrument.play(el.getAttribute("data-mobile-piano", 0, optsobj));
+                /*console.log(a);*/
+                bool2 = false;
+                currKeys2[el.getAttribute("data-mobile-piano")] = a.id;
+                get_key_el(el.getAttribute("data-mobile-piano")).classList.add("highlight");
+            });
+            el.addEventListener("mouseup", (ev) => {
+                bool2 = true;
+                instrument.stop(0, [currKeys2[el.getAttribute("data-mobile-piano")]]);
+                currKeys2[el.getAttribute("data-mobile-piano")] = false;
+                get_key_el(el.getAttribute("data-mobile-piano")).classList.remove("highlight");
+            });
+        });
+        function get_key_el(note) {
+            return document.querySelector('.piano_tile[data-mobile-piano="' + note + '"]');
+        }
+        function getpianotempoinpval() {
+            var rtv = (ColourgreyShorterJS.checkNumber(Number(document.getElementById('tempoinp').value))) ? Number(document.getElementById('tempoinp').value) : 120/*(function () { alert('not a number') })()*/;
+            if (rtv == Infinity) {
+                rtv = 120;
+            }
+            if (document.getElementById('tempoinp').value.length < 1) {
+                rtv = 120;
+            }
+            return rtv;
+        }
+        async function getpianotempo2() {
+            return await getpianotempoinpval();
+        }
+        function getpianotempo3() {
+            var rtv = 120;
+            getpianotempo2().then(function (data) {
+                rtv = data;
+            });
+            return rtv;
+        }
+        function setpianotempoinpval() {
+            _PIANOTEMPO = getpianotempoinpval();
+            return _PIANOTEMPO;
+        }
+
+
+        var keyboards2 = [" ", "ArrowLeft", "ArrowRight", "0", "z", "x", "c", "v", "b", "n", "m", ",", ".", "/", "1", "2", "a", "s", "d", "f", "g", "h", "j", "k", "l", ";", "'", "Enter", "4", "5", "6", "+", "w", "e", "t", "y", "u", "o", "p", "]", "\\", "7", "9"];
+        var notetonumber = function (note) {
+            var notes = ["C4", "D4", "E4", "F4", "G4", "A4", "B4", "C5", "D5", "E5", "F5", "G5", "A5", "B5", "C6", "D6", "E6"];
+            var notenumbers = ["1", "2", "3", "4", "5", "6", "7", "1", "2", "3", "4", "5", "6", "7", "1", "2", "3"];
+            return notenumbers[notes.indexOf(note)];
+        }
+        var numbertonote = function (note) {
+            var notes = ["C4", "D4", "E4", "F4", "G4", "A4", "B4", "C5", "D5", "E5", "F5", "G5", "A5", "B5", "C6", "D6", "E6"];
+            var notenumbers = ["1", "2", "3", "4", "5", "6", "7", "1", "2", "3", "4", "5", "6", "7", "1", "2", "3"];
+            return notes[notenumbers.indexOf(note)];
+        }
+        var notetokeyboard = function (keyboard) {
+            var keyboards = [" ", "ArrowLeft", "z", "x", "c", "v", "b", "n", "m", ",", ".", "/", "a", "s", "d", "f", "g", "h", "j", "k", "l", ";", "'", "Enter", "4", "5", "6", "+", "w", "e", "t", "y", "u", "o", "p", "]", "\\", "7", "9"];
+            var notes = ["C3", "C#3", "D3", "D#3", "E3", "F3", "F#3", "G3", "G#3", "A3", "A#3", "B3", "C4", "D4", "E4", "F4", "G4", "A4", "B4", "C5", "D5", "E5", "F5", "G5", "A5", "B5", "C6", "D6", "C#4", "D#4", "F#4", "G#4", "A#4", "C#5", "D#5", "F#5", "G#5", "A#5", "C#6"];
+            return keyboards[notes.indexOf(keyboard)];
+        }
+        var keyboardtonote = function (keyboard) {
+            var keyboards = [" ", "ArrowLeft", "z", "x", "c", "v", "b", "n", "m", ",", ".", "/", "a", "s", "d", "f", "g", "h", "j", "k", "l", ";", "'", "Enter", "4", "5", "6", "+", "w", "e", "t", "y", "u", "o", "p", "]", "\\", "7", "9"];
+            var notes = ["C3", "C#3", "D3", "D#3", "E3", "F3", "F#3", "G3", "G#3", "A3", "A#3", "B3", "C4", "D4", "E4", "F4", "G4", "A4", "B4", "C5", "D5", "E5", "F5", "G5", "A5", "B5", "C6", "D6", "C#4", "D#4", "F#4", "G#4", "A#4", "C#5", "D#5", "F#5", "G#5", "A#5", "C#6"];
+            return notes[keyboards.indexOf(keyboard)];
+        }
+
+        var notetonote = function (note) {
+            var notes = ["C4", "D4", "E4", "F4", "G4", "A4", "B4", "C5", "D5", "E5", "F5", "G5", "A5", "B5", "C6", "D6", "E6"];
+            var notes1 = ["D6", "B5", "G5", "E5", "C5", "A4", "F4", "D4", "C4", "E4", "G4", "B4", "D5", "F5", "A5", "C6", "E6"];
+            return notes1[notes.indexOf(note)];
+        }
+
+        var keyToNote = [];
+        var noteToKey = [];
+        /*(function () {
+            //first note : 0x15 == 33
+            //last note : 0x6C == 264
+            var keys = ['C', 'Db', 'D', 'Eb', 'E', 'F', 'Gb', 'G', 'Ab', 'A', 'Bb', 'B'];
+            var keys2 = ['C', 'C#', 'D', 'D#', 'E', 'F', 'F#', 'G', 'G#', 'A', 'A#', 'B'];
+            for (var i = 33; i <= 264; i++) {
+                var octave = (i - 12) / 12 >> 0;
+                var name = keys2[i % 12] + octave;
+                keyToNote[name] = i;
+                noteToKey[i] = name;
+            }
+        })();*/
+
+        var changeTempo = function (tempo) {
+            Player.tempo = tempo;
+        }
+
+        var play = function () {
+            Player.play();
+        }
+
+        var pause = function () {
+            Player.pause();
+        }
+
+        var stop = function () {
+            Player.stop();
+        }
+
+        var reset = function () {
+        }
+        var noteLengths2 = {}
+        var notebar_animation2 = function (noteName, noteLength, begin, delay) {
+            var notebarBG = document.querySelector('.key.key_notebar[data-piano-code="' + noteName + '"]');
+            if (!(notebarBG instanceof HTMLElement)) {
+                return false;
+            }
+            /*if ((currKeys2[noteName] == false && (noteName == 'B3'))) {
+                document.querySelector('.key.key_notebar[data-piano-code="B3"] *').remove();
+                get_key_el("B3").classList.remove("highlight");
+            }
+            if (!get_key_el("B3").classList.contains("highlight")) {
+
+                document.querySelector('.key.key_notebar[data-piano-code="B3"] *').remove();
+            }
+            if ((currKeys2[noteName] == false && (noteName == 'A3'))) {
+                document.querySelector('.key.key_notebar[data-piano-code="A3"] *').remove();
+                get_key_el("A3").classList.remove("highlight");
+            }
+            if (!get_key_el("A3").classList.contains("highlight")) {
+
+                document.querySelector('.key.key_notebar[data-piano-code="A3"] *').remove();
+            }*/
+            if (!currKeys2[noteName]) {
+                return false;
+            }
+            if (noteLength > 2) {
+                //console.log('aaaaa');
+                //console.log(noteLength);
+            }
+            if (ColourgreyShorterJS.checkNumber(noteLength) && !isNaN(noteLength)) {
+                if (noteLength > 2) {
+                    //console.log('aaaaa');
+                    //console.log(noteLength);
+                }
+                window.setTimeout(function () {
+
+                    var notebar = notebarBG.appendChild(document.createElement('p'));
+                    if (!currKeys2[noteName]) {
+                        notebar.remove();
+                    }
+                    notebar.classList.add('notebar');
+                    notebar.style.height = noteLength * 12 * 16 + 'px';
+                    notebar.style.width = '1em';
+                    notebar.animate([{ 'transform': 'translateY(0)' }, { 'transform': 'translateY(12em)' }], { duration: delay * 1000 + noteLength * 1000 });
+
+                    if (!currKeys2[noteName]) {
+                        notebar.remove();
+                    }
+                }, begin * 1000);
+            } else {
+                return false;
+            }
+        }
+        var withbar = true;
+        var notelengthunit = 10;
+        var playmidi = function (event) {
+            var note0 = document.querySelector('.sheet .key[data-piano-code="' + event.noteName + '"]');
+            if (!(note0 instanceof HTMLElement)) {
+                return false;
+            }
+            var note1 = note0.appendChild(document.createElement("p"));
+            note1.style.width = '1.2em';
+            note1.style.position = 'relative'
+            note1.style.textAlign = 'center';
+            note1.style.height = ac.currentTime * notelengthunit + 'px';
+            note1.animate([{ top: '0px' }, { top: '100%' }], { duration: ac.currentTime });
+            setTimeout(function () {
+                note1.remove();
+            }, ac.currentTime);
+        }
+
+        var lesson_mode = function (event) {
+            playmidi(event);
+            timeoutId = setTimeout(function () {
+                pause();
+            }, 1500);
+            timeoutId1 = setTimeout(function () {
+                playmidi(event);
+            }, 3000);
+            // setTimeout(function() {
+            // 	playmidi(event);
+            // }, 9000);
+            // setTimeout(function() {
+            // 	playmidi(event);
+            // }, 12000);
+            timeoutId2 = setTimeout(function () {
+                play();
+            }, 7500);
+
+            clearTimeout(timeoutId);
+            clearTimeout(timeoutId2);
+            clearTimeout(timeoutId3);
+
+        }
+        var notelengths0 = {};
+        var notebar_animation = function (note, start, end) {
+            /*var notebarElPar = document.querySelector(`.key[data-piano-code="${note}"].key_notebar`);
+            var notebarEl = notebarElPar.appendChild(document.createElement("div"));
+            notelengths0[note] = end - start;
+            notebarEl.classList.add("notebar");
+            notebarEl.style.height = notelengths0[note] * 15 + 'px';
+            notebarEl.style.position = 'relative';
+            var currtime = ac.currentTime;
+            notebarEl.animate([{ 'top': (end) * -10 + 'px' }, { 'top': '500px' }], { duration: start * 1000 });
+            window.setTimeout(function () {
+                notebarEl.animate([{ 'height': notelengths0[note] * 15 + 'px' }, { 'height': '0px' }], { duration: (end - start) * 1000 });
+                window.setTimeout(function () {
+                    notebarEl.remove();
+                    notelengths0[note] = 0;
+                }, end * 1000 - start * 1000);
+            }, start * 1000);*/
+        }
+        function createNoteBar(noteIdx, length) {
+            var notebarElPar = document.querySelector(`.key[data-piano-code="${pitchnumbers[noteIdx]}"].key_notebar`);
+            if (notebarElPar == null) {
+                return false;
+            }
+            var noteBarElpr = document.createElement('div');
+            var noteBar = notebarElPar.appendChild(noteBarElpr);
+            noteBar.classList.add('notebar');
+            noteBar.style.height = new String(length) + 'em';
+            noteBar.style.position = 'relative';
+            noteBar.style.top = new String((0 - length)) + 'em';
+            return noteBar;
+        }
+        function withbarchecked() {
+            return withbar;
+        }
+        function getpianotempo() {
+            var rtv = getpianotempoinpval();
+            return rtv || _PIANOTEMPO;
+        }
+        var playmidi5 = (track, idx, { tempoparam, stopboolfunc, sustainparam, barfunc }) => {
+            setTimeout(() => {
+
+            }, timeout);
+        }
+        var playmidi4 = (track, idx, { tempoparam, stopboolfunc, sustainparam, barfunc }) => {
+            var _4s_per_1min = 120;
+            if (typeof tempoparam === 'function') {
+                _4s_per_1min = tempoparam();
+            } else {
+                return [track, idx] || false;
+            }
+            var newstopbool = false;
+            if (typeof stopboolfunc === 'function') {
+                newstopbool = stopboolfunc();
+            }
+            if (stopbool) {
+                return [track, idx] || false;
+            }
+            var barbool = true;
+            if (typeof barfunc === 'function') {
+                barbool = barfunc();
+            }
+            var sustainbool = false;
+            if (typeof sustainparam === 'function') {
+                sustainbool = sustainparam();
+            }
+            if (midi_reader instanceof MIDIFile && song != {} && typeof track === 'number' && typeof idx === 'number') {
+                var thisnote = song.tracks[track].notes[idx];
+                setTimeout(function () {
+                    if (barbool) {
+                        var newNoteBar = createNoteBar(thisnote.pitch, thisnote.duration * 30);
+                        if (newNoteBar === false) {
+                            return [track, idx] || false;
+                        }
+                        newNoteBar.animate([{ 'top': new String((0 - thisnote.duration * 30)) + 'em' }, { 'top': '30em' }], {
+                            duration: (1000 + (1000 * thisnote.duration) * (_1Minute / tempoparam())),
+                            iterations: 1,
+                        });
+                        window.setTimeout(() => {
+                            var newplaying = instrument.play(pitchnumbers[thisnote.pitch], 0, { sustain: (sustainbool) ? 8 : 0.9 });
+                            currKeys2[pitchnumbers[thisnote.pitch]] = newplaying.id;
+                            if (sustainbool) {
+                                get_key_el(pitchnumbers[thisnote.pitch]).classList.add("pedal");
+                            } else {
+
+                                get_key_el(pitchnumbers[thisnote.pitch]).classList.remove("pedal");
+                            }
+                            get_key_el(pitchnumbers[thisnote.pitch]).classList.add("highlight");
+                        }, 1000);
+                        window.setTimeout(() => {
+                            instrument.stop(0, [currKeys2[pitchnumbers[thisnote.pitch]]]);
+                            currKeys2[pitchnumbers[thisnote.pitch]] = undefined;
+                            get_key_el(pitchnumbers[thisnote.pitch]).classList.remove("highlight");
+                            newNoteBar.remove();
+                        }, 1000 + (1000 * thisnote.duration) * (_1Minute / tempoparam()));
+                    } else {
+                        window.setTimeout(() => {
+                            var newplaying = instrument.play(pitchnumbers[thisnote.pitch], 0, { sustain: (sustainbool) ? 8 : 0.9 });
+                            currKeys2[pitchnumbers[thisnote.pitch]] = newplaying.id;
+                            if (sustainbool) {
+                                get_key_el(pitchnumbers[thisnote.pitch]).classList.add("pedal");
+                            } else {
+
+                                get_key_el(pitchnumbers[thisnote.pitch]).classList.remove("pedal");
+                            }
+                            get_key_el(pitchnumbers[thisnote.pitch]).classList.add("highlight");
+                        }, 1000);
+                        window.setTimeout(() => {
+                            instrument.stop(0, [currKeys2[pitchnumbers[thisnote.pitch]]]);
+                            currKeys2[pitchnumbers[thisnote.pitch]] = undefined;
+                            get_key_el(pitchnumbers[thisnote.pitch]).classList.remove("highlight");
+                        }, 1000 + (1000 * thisnote.duration) * (_1Minute / tempoparam()));
+                    }
+                }, thisnote.when * 1000 * (_1Minute / tempoparam()));
+            }
+            return [track, idx];
+        }
+        var playmidi2 = function (track, idx, bar, tempoparam, sustainparam) {
+            var _4s_per_1min = 120;
+            if (typeof tempoparam === 'function') {
+                _4s_per_1min = tempoparam();
+            }
+            if (stopbool === true) {
+                //console.log(track + idx);
+                return [track, idx] || false;
+            }
+            if (midi_reader instanceof MIDIFile && song != {} && typeof track === 'number' && typeof idx === 'number') {
+                var thisnote = song.tracks[track].notes[idx];
+                if (/*document.querySelector('.key.key_notebar[data-piano-code="' + pitchnumbers[thisnote.pitch] + '"] *') == null &&*/ thisnote.duration) {
+                    /*notebar_animation2(pitchnumbers[thisnote.pitch], thisnote.duration * (_1Minute / getpianotempo()), this.when * (_1Minute / getpianotempo()), 2);*/
+                }
+                window.setTimeout(function () {
+                    //console.log(thisnote.when * 1000 * (_1Minute / getpianotempo()));
+                    _4s_per_1min = getpianotempo3();
+                    var newplaying = instrument.play(pitchnumbers[thisnote.pitch], 0, { sustain: (sustainparam) ? 8 : 0.9 });
+                    bool2 = false;
+                    currKeys2[pitchnumbers[thisnote.pitch]] = newplaying.id;
+                    get_key_el(pitchnumbers[thisnote.pitch]).classList.add("highlight");
+                    if (sustainparam) {
+                        get_key_el(pitchnumbers[thisnote.pitch]).classList.add("pedal");
+                    } else {
+
+                        get_key_el(pitchnumbers[thisnote.pitch]).classList.remove("pedal");
+                    }
+                    /*if (withbarchecked()) {
+                        *notebar_animation(pitchnumbers[thisnote.pitch], thisnote.when, thisnote.duration + thisnote.when);
+                        if ((currKeys2[pitchnumbers[thisnote.pitch]] == false && (pitchnumbers[thisnote.pitch] == 'B3' || thisnote.pitch == 58)) && document.querySelector('.key.key_notebar[data-piano-code="B3"] *') instanceof HTMLElement) {
+                            document.querySelector('.key.key_notebar[data-piano-code="B3"] *').remove();
+                            get_key_el("B3").classList.remove("highlight");
+                        }
+                        if (!get_key_el("B3").classList.contains("highlight") && document.querySelector('.key.key_notebar[data-piano-code="B3"] *') instanceof HTMLElement) {
+
+                            document.querySelector('.key.key_notebar[data-piano-code="B3"] *').remove();
+                        }
+                        if ((currKeys2[pitchnumbers[thisnote.pitch]] == false && (pitchnumbers[thisnote.pitch] == 'A3' || thisnote.pitch == 57)) && document.querySelector('.key.key_notebar[data-piano-code="A3"] *') instanceof HTMLElement) {
+                            document.querySelector('.key.key_notebar[data-piano-code="A3"] *').remove();
+                            get_key_el("A3").classList.remove("highlight");
+                        }
+                        if (!get_key_el("A3").classList.contains("highlight") && document.querySelector('.key.key_notebar[data-piano-code="A3"] *') instanceof HTMLElement) {
+
+                            document.querySelector('.key.key_notebar[data-piano-code="A3"] *').remove();
+                        }
+
+                        if ((currKeys2[pitchnumbers[thisnote.pitch]] == false && (pitchnumbers[thisnote.pitch] == 'B3' || thisnote.pitch == 58)) && document.querySelector('.key.key_notebar[data-piano-code="B3"] *') instanceof HTMLElement) {
+                            document.querySelector('.key.key_notebar[data-piano-code="B3"] *').remove();
+                            get_key_el("B3").classList.remove("highlight");
+                        }
+                        if (!get_key_el("B3").classList.contains("highlight") && document.querySelector('.key.key_notebar[data-piano-code="B3"] *') instanceof HTMLElement) {
+
+                            document.querySelector('.key.key_notebar[data-piano-code="B3"] *').remove();
+                        }
+                        if ((currKeys2[pitchnumbers[thisnote.pitch]] == false && (pitchnumbers[thisnote.pitch] == 'A3' || thisnote.pitch == 57)) && document.querySelector('.key.key_notebar[data-piano-code="A3"] *') instanceof HTMLElement) {
+                            document.querySelector('.key.key_notebar[data-piano-code="A3"] *').remove();
+                            get_key_el("A3").classList.remove("highlight");
+                        }
+                        if (!get_key_el("A3").classList.contains("highlight") && document.querySelector('.key.key_notebar[data-piano-code="A3"] *') instanceof HTMLElement) {
+
+                            document.querySelector('.key.key_notebar[data-piano-code="A3"] *').remove();
+                        }
+                    }*/
+                    document.getElementById("rangeinp").value = (ac.currentTime / song.duration) * 100;
+                }, thisnote.when * 1000 * (_1Minute / getpianotempo()));
+                window.setTimeout(function () {
+                    //console.log(thisnote.when * 1000 * (_1Minute / getpianotempo()));
+                    if (document.querySelector('.key.key_notebar[data-piano-code="' + pitchnumbers[thisnote.pitch] + '"] *') instanceof HTMLElement) {
+                        document.querySelector('.key.key_notebar[data-piano-code="' + pitchnumbers[thisnote.pitch] + '"] *').remove();
+                    }
+
+                    get_key_el(pitchnumbers[thisnote.pitch]).classList.remove("highlight");
+                    bool2 = true;
+                    currKeys.splice(currKeys.indexOf(pitchnumbers[thisnote.pitch]));
+                    instrument.stop(0, [currKeys2[pitchnumbers[thisnote.pitch]]]);
+                    currKeys2[pitchnumbers[thisnote.pitch]] = false;
+                    /*if (bar) {
+                        if ((currKeys2[pitchnumbers[thisnote.pitch]] == false && (pitchnumbers[thisnote.pitch] == 'B3' || thisnote.pitch == 58)) && document.querySelector('.key.key_notebar[data-piano-code="B3"] *') instanceof HTMLElement) {
+                            document.querySelector('.key.key_notebar[data-piano-code="B3"] *').remove();
+                            get_key_el("B3").classList.remove("highlight");
+                        }
+                        if (!get_key_el("B3").classList.contains("highlight") && document.querySelector('.key.key_notebar[data-piano-code="B3"] *') instanceof HTMLElement) {
+
+                            document.querySelector('.key.key_notebar[data-piano-code="B3"] *').remove();
+                        }
+                        if ((currKeys2[pitchnumbers[thisnote.pitch]] == false && (pitchnumbers[thisnote.pitch] == 'A3' || thisnote.pitch == 57)) && document.querySelector('.key.key_notebar[data-piano-code="A3"] *') instanceof HTMLElement) {
+                            document.querySelector('.key.key_notebar[data-piano-code="A3"] *').remove();
+                            get_key_el("A3").classList.remove("highlight");
+                        }
+                        if (!get_key_el("A3").classList.contains("highlight") && document.querySelector('.key.key_notebar[data-piano-code="A3"] *') instanceof HTMLElement) {
+
+                            document.querySelector('.key.key_notebar[data-piano-code="A3"] *').remove();
+                        }
+                    }*/
+                    document.getElementById("rangeinp").value = (ac.currentTime / song.duration) * 100;
+                }, ((thisnote.duration * 25) + (thisnote.when * 1000)) * (_1Minute / getpianotempo()));
+            }
+            return [track, idx];
+        }
+        var playmidi3 = function (parama, paramb, paramc, paramd, parame) {
+            return playmidi4(parama, paramb, { tempoparam: () => { return _PIANOTEMPO }, stopboolfunc: () => { return stopbool; }, sustainparam: () => { return sustain; }, barfunc: () => { return withbar; } });
+        }
+        var currentTrackIdx = 0;
+        var currentNotesIdx = [];
+        var currentNoteIdx = 0;
+        var whetherithasnotplayedornot = true;
+        var playmidi0 = function (notplayedyet, trackp, idxp, idxesp) {
+            if (typeof notplayedyet !== 'boolean') {
+                notplayedyet = true;
+            }
+            if (typeof trackp != 'number' || isNaN(trackp)) {
+                trackp = 0;
+            }
+            if (typeof idxp != 'number' || isNaN(idxp)) {
+                idxp = 0;
+            }
+            if (!Array.isArray(idxesp)) {
+                idxesp = [idxp];
+            }
+            if (midi_reader instanceof MIDIFile && song != {}) {
+                if (notplayedyet) {
+                    song.tracks.forEach(function (val, idx, arr) {
+                        var midievents = midi_reader.getEvents(idx);
+                        var mididata = midi_reader.tracks[idx].datas;
+                        var specialvar = false;
+                        val.notes.forEach(function (val1, idx1, arr1) {
+                            //console.log(midievents);
+                            var databyte = mididata.getUint8(idx1);
+                            if (databyte == 63) {
+                                sustain = false;
+                            }
+                            if (databyte == 64) {
+                                sustain = true;
+                            }
+
+                            sustain = val1.sustain;
+                            specialvar = playmidi3(idx, idx1, withbar, function () { return _PIANOTEMPO }, val1.sustain);
+                            currentTrackIdx = specialvar[0];
+                            currentNoteIdx = specialvar[1];
+                            currentNotesIdx[currentTrackIdx] = currentNoteIdx;
+                            if (specialvar == false) {
+                                //console.log('aaa');
+                                return;
+                            }
+                        });
+                        if (specialvar == false) {
+                            return;
+                        }
+                    });
+                } else {
+                    for (var i0j = trackp; i0j < song.tracks.length; i0j++) {
+                        var midievents = midi_reader.getEvents(i0j);
+                        var mididata = midi_reader.tracks[i0j].datas;
+                        var val = song.tracks[i0j];
+                        var specialvar = false;
+                        for (var i1j = idxp; i1j < val.notes.length; i1j++) {
+                            //console.log(midievents)
+                            midievents.forEach(function (val2, idx2, arr2) {
+                                if (val2.idx == i1j) {
+                                    if (Array.isArray(val2.data) && val2.data[2] == 64) {
+                                        //console.log(sustain + 'sustain');
+                                        sustain = true;
+                                    }
+                                    if (Array.isArray(val2.data) && val2.data[2] == 63) {
+                                        sustain = false;
+                                    }
+                                }
+                            });
+                            var databyte = mididata.getUint8(idx1);
+                            if (databyte == 63) {
+                                sustain = false;
+                            }
+                            if (databyte == 64) {
+                                sustain = true;
+                            }
+                            var val1 = val.notes[i1j];
+                            sustain = val1.sustain;
+                            specialvar = playmidi3(i0j, i1j, withbar, function () { return _PIANOTEMPO }, val1.sustain);
+                            currentTrackIdx = specialvar[0];
+                            currentNoteIdx = specialvar[1];
+                            currentNotesIdx[currentTrackIdx] = currentNoteIdx;
+                            if (specialvar == false) {
+                                //console.log('aaa');
+                                break;
+                            }
+                        }
+                        if (specialvar == false) {
+                            break;
+                        }
+                    }
+                }
+            }
+        }
+        Soundfont.instrument(ac, 'acoustic_grand_piano').then(function (instrumentnow) {
+            instrument = instrumentnow;
+            midi_reader = new MIDIFile();
+
+            loadFile = function () {
+                //Player.stop();
+                var file = document.querySelector('#myfile').files[0];
+                var reader = new FileReader();
+                if (file) reader.readAsArrayBuffer(file);
+                reader.addEventListener("load", function (event) {
+                    bool1 = 0;
+                    /*Player = new Urobot2011MIDIPlayerJS.Player(function (event) {
+                        playmidi(event);
+                        lesson_mode(event);
+                    });
+                    play();
+                    Player.loadArrayBuffer(reader.result);*/
+
+                    midi_reader.loadSong(event.target.result, false, function (param) {
+                        song = param.parseSong();
+                        var notplayedyet = whetherithasnotplayedornot;
+                        whetherithasnotplayedornot = false;
+                        ac_2.connect(ac.destination);
+                        //console.log(ac.destination);
+                        var ac_4 = document.body.appendChild(ac_2.mediaElement);
+                        my_audio = ac_4;
+                        // console.log(ac_2.mediaElement);
+                        playmidi0(notplayedyet, 0, currentNoteIdx, []);
+                        whetherithasnotplayedornot = true;
+                    });
+                });
+            }
+
+            loadDataUri = function (dataUri) {
+                bool1 = 0;
+                Player = new Urobot2011MIDIPlayerJS.Player(function (event) {
+                    playmidi(event);
+                    play();
+                });
+
+                Player.loadDataUri(dataUri);
+
+
+            }
+        });
+        function setBG(link) {
+            if (link === false) {
+                document.querySelector('.sheet').style.backgroundImage = ``;
+            }
+            document.querySelector('.sheet').style.backgroundImage = `url('${link}')`;
+        }
+        var settingtime = false;
+        document.getElementById("rangeinp").addEventListener("mousedown", function (ev) {
+            settingtime = true;
+            stopbool = true;
+        });
+        document.getElementById("rangeinp").addEventListener("mouseup", function (ev) {
+            settingtime = false;
+            stopbool = false;
+        });
+        document.getElementById("rangeinp").addEventListener("mousemove", function (ev) {
+            if (settingtime) {
+                ac.currentTime = song.duration * (document.getElementById("rangeinp").value / 100);
+                //console.log(ac.currentTime);
+            }
+        });
+        cgrcssjs.styleAll();
+    </script>
+</body>
+
+</html>
