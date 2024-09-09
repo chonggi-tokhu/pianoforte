@@ -371,6 +371,10 @@
                 bool2 = false;
                 currKeys2[val.getAttribute("data-piano-code")] = a.id;
                 get_key_el(val.getAttribute("data-piano-code")).classList.add("highlight");
+                setTimeout(()=>{
+                    instrument.stop(0,a.id);
+                    currKeys2[val.getAttribute("data-piano-code")]=undefined;
+                },2000);
             });
             val.addEventListener("mouseup", function (e) {
                 bool2 = true;
@@ -409,6 +413,10 @@
                 bool2 = false;
                 currKeys2[el.getAttribute("data-mobile-piano")] = a.id;
                 get_key_el(el.getAttribute("data-mobile-piano")).classList.add("highlight");
+                setTimeout(()=>{
+                    instrument.stop(0,a.id);
+                    currKeys2[el.getAttribute("data-mobile-piano")]=undefined;
+                },2000);
             });
             el.addEventListener("touchend", (ev) => {
                 bool2 = true;
@@ -423,6 +431,10 @@
                 bool2 = false;
                 currKeys2[el.getAttribute("data-mobile-piano")] = a.id;
                 get_key_el(el.getAttribute("data-mobile-piano")).classList.add("highlight");
+                setTimeout(()=>{
+                    instrument.stop(0,a.id);
+                    currKeys2[el.getAttribute("data-mobile-piano")]=undefined;
+                },2000);
             });
             el.addEventListener("mouseup", (ev) => {
                 bool2 = true;
