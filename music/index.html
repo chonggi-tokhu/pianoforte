@@ -154,6 +154,8 @@
                     <p><span style="font-weight:bold;color:#c00538;text-decoration:line-through;">주의: 실제로는 한 옥타브
                             높습니다.<small><sup>현재로선 88건이 다 있으므로 해결된 문제</sup></small></span></p>
                     <p><a href="./index2.html">연주하기 좋은 피아노(건반과 컴 키보드가 다름)</a></p>
+        <p id="startCapture" style="color: #20ff60;">녹화 시작</p>
+        <p id="stopCapture" style="color: #ff2060;">녹화 중지</p>
                 </div>
                 <div class="input-group">
                     <p><span style="font-size:75%;">자동피아노 설정</span></p>
@@ -1030,7 +1032,73 @@
                 document.querySelector('.sheet').style.backgroundRepeat='';*/
                 document.querySelector('.guest_profile img').setAttribute('src', '');
             }
-        });
+        });const displayMediaOptions = {
+    video: {
+        displaySurface: "tab",
+    },
+    audio: {
+        echoCancellation: true,
+        noiseSuppression: true,
+        sampleRate: 44100,
+        suppressLocalAudioPlayback: true,
+    },
+    surfaceSwitching: "include",
+    selfBrowserSurface: "exclude",
+    systemAudio: "exclude",
+};
+var videoElem = document.querySelector('video#myvideo');
+var bool0 = false;
+var mediaRecorder = null;
+var binaryData = [];
+async function startCapture(cbfunc) {
+
+    try {
+        videoElem.srcObject =
+            await navigator.mediaDevices.getDisplayMedia(displayMediaOptions).then(cbfunc);
+        bool0 = true;
+    } catch (err) {
+        console.error(err);
+    }
+}
+/*function pushtotracks() {
+  if (bool0) {
+    binaryData.push(videoElem.srcObject.getVideoTracks())
+  }
+}*/
+function stopCapture(evt) {
+    let tracks = videoElem.srcObject.getTracks();
+    bool0 = false;
+    tracks.forEach((track) => track.stop());
+    if (mediaRecorder instanceof MediaRecorder) {
+        mediaRecorder.stop();
+    }
+    return tracks;
+}
+function recording(stream) {
+    var data = [];
+    mediaRecorder = new MediaRecorder(stream, { mimeType:/*'x-matroska/webm; codecs="avc1.42E01E"'*/ 'video/webm; codecs="avc1.42E01E"' });
+    mediaRecorder.ondataavailable = function (ev) {
+        data.push(ev.data);
+    }
+    mediaRecorder.onstop = function (ev) {
+        var newBlob = new Blob(data, { type: 'video/webm; codecs="avc1.42E01E"' });
+        var newLinkPr = document.createElement("a");
+        var newLink = document.body.appendChild(newLinkPr);
+        newLink.href = window.URL.createObjectURL(newBlob);
+        newLink.download = 'myFile.webm';
+        newLink.click();
+    }
+    mediaRecorder.start();
+}
+var CtrlPressed = false;
+document.getElementById('startCapture').addEventListener('click', function (ev) {
+    startCapture(function (stream) {
+        recording(stream);
+    });
+});
+document.getElementById('stopCapture').addEventListener('click', function (ev) {
+    stopCapture(ev);
+});
         cgrcssjs.styleAll();
     </script>
 </body>
