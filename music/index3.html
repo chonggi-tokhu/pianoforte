@@ -970,6 +970,7 @@
             }
         }
         change_instrument = ()=>{
+            instruments=[];
             instrumentfunc().split(',').forEach((val)=>{
             Soundfont.instrument(ac, val).then(function (instrumentnow) {
             instrument = instrumentnow;
