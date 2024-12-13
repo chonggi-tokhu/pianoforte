@@ -173,7 +173,8 @@
                     <button class="btn btn-primary"
                         onclick="_PIANOTEMPO=(ColourgreyShorterJS.checkNumber(Number(document.getElementById('tempoinp').value)))?Number(document.getElementById('tempoinp').value):120">set
                         tempo(if the value is not number, it becomes 120)</button>
-                    <input id="instrument" placeholder="악기 이름">
+                    <input id="instrument" placeholder="바꿀 악기 이름">
+                    <button onclick="change_instrument">악기 종류 바꾸기</button>
                 </div>
             </div>
             <div class=" guest_profile_wrapper" style="position:absolute;text-align:center;width:100%;">
@@ -964,7 +965,7 @@
                 }
             }
         }
-        Soundfont.instrument(ac, instrumentfunc()).then(function (instrumentnow) {
+        change_instrument = ()=>{Soundfont.instrument(ac, instrumentfunc()).then(function (instrumentnow) {
             instrument = instrumentnow;
             midi_reader = new MIDIFile();
 
@@ -1003,7 +1004,8 @@
 
             }
             document.querySelector('.sheet').classList.remove('loading');
-        });
+        });}
+        change_instrument
         function setBG(link) {
             if (link === false) {
                 document.querySelector('.sheet').style.backgroundImage = ``;
