@@ -912,6 +912,7 @@
         var whetherithasnotplayedornot = true;
         function resetvars(){
             instrument=null;
+            instruments = [];
             loadFile,loadDataUri,Player=null;
             AudioContext = window.AudioContext || window.webkitAudioContext || false;
             ac = new AudioContext || new webkitAudioContext;
