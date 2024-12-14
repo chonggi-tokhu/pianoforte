@@ -999,7 +999,8 @@
 
             loadFile = function () {
                 //Player.stop();
-                var file = document.querySelector('#myfile').files[0];
+                var files0 = document.querySelector('#myfile').files;
+                var file = files0[files0.length-1];
                 var reader = new FileReader();
                 if (file) reader.readAsArrayBuffer(file);
                 reader.addEventListener("load", function (event) {
