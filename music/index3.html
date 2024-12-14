@@ -582,25 +582,6 @@
         ac.length = 50;
         var currKeys = [];
         var currKeys2 = {};
-        function resetvars(){
-            instrument=null;
-            loadFile,loadDataUri,Player=null;
-            AudioContext = window.AudioContext || window.webkitAudioContext || false;
-            ac = new AudioContext || new webkitAudioContext;
-            currentTime=0;
-            timeoutId=null;
-            sustain=false;
-            timeoutId2=null;
-            timeoutId3=null;
-            bool1=0;
-            bool2=true;
-            currKeys = [];
-            currKeys2 = {};
-            midi_reader = null;
-            pedal=0;
-            song = {};
-            stopbool = true;
-        }
         function get_key_el(note) {
             return document.querySelector('.keys .key[data-piano-code="' + note + '"]');
         }
@@ -929,6 +910,29 @@
         var currentNotesIdx = [];
         var currentNoteIdx = 0;
         var whetherithasnotplayedornot = true;
+        function resetvars(){
+            instrument=null;
+            loadFile,loadDataUri,Player=null;
+            AudioContext = window.AudioContext || window.webkitAudioContext || false;
+            ac = new AudioContext || new webkitAudioContext;
+            currentTime=0;
+            timeoutId=null;
+            sustain=false;
+            timeoutId2=null;
+            timeoutId3=null;
+            bool1=0;
+            bool2=true;
+            currKeys = [];
+            currKeys2 = {};
+            midi_reader = null;
+            pedal=0;
+            song = {};
+            stopbool = true;
+            currentTrackIdx = 0;
+            currentNotesIdx = [];
+            currentNoteIdx = 0;
+            whetherithasnotplayedornot = true;
+        }
         var playmidi0 = function (notplayedyet, trackp, idxp, idxesp) {
             if (typeof notplayedyet !== 'boolean') {
                 notplayedyet = true;
