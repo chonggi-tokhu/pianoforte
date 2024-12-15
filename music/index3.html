@@ -1014,7 +1014,7 @@
             instruments=[];
             instrumentsettings=[];
             resetvars();
-            instrumentsettings=JSON.parse(document.getElementById("instrumentJSON").value);
+            instrumentsettings=document.getElementById("instrumentJSON").value?JSON.parse(document.getElementById("instrumentJSON").value):[];
             instrumentfunc().split(',').forEach((val)=>{
             Soundfont.instrument(ac, val).then(function (instrumentnow) {
             instrument = instrumentnow;
