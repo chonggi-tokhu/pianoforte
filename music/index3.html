@@ -955,15 +955,20 @@
                     song.tracks.forEach(function (val, idx, arr) {
                         var specialvar = false;
                         
+                        var specialarr0=[];
+                        var prevnote={when:0};
+                        var specialinc=0;
+                        val.notes.forEach(function (val1, idx1, arr1) {
+                            
+                            if(val1.when==prevnote.when){specialarr0.push(val1);specialinc++}else{prevnote.when=val1.when;specialarr0=[];specialinc=0};
+                            
                         if (instrumentsettings[idx0]){
-                            if(instrumentsettings[idx0].trackstonotplay instanceof Array){
-                                if (!instrumentsettings[idx0].trackstonotplay.includes(idx)){
+                            if (instrumentsettings[idx0].playonce){
+                                if (specialinc!==0){
                                     return;
                                 }
                             }
                         }
-                        val.notes.forEach(function (val1, idx1, arr1) {
-                            
                             sustain = val1.sustain;
                             specialvar = playmidi2(idx, idx1, withbar,val1.sustain,idx0);
                             currentTrackIdx = specialvar[0];
@@ -983,16 +988,19 @@
                     for (var i0j = trackp; i0j < song.tracks.length; i0j++) {
                         var val = song.tracks[i0j];
                         var specialvar = false;
+                        var specialarr0=[];
+                        var prevnote={when:0};
+                        var specialinc=0;
+                        for (var i1j = idxp; i1j < val.notes.length; i1j++) {
+                            var val1 = val.notes[i1j];
+                            if(val1.when==prevnote.when){specialarr0.push(val1);specialinc++}else{prevnote.when=val1.when;specialarr0=[];specialinc=0};
                         if (instrumentsettings[idx]){
-                            if(instrumentsettings[idx].trackstonotplay instanceof Array){
-                                if (!instrumentsettings[idx].trackstonotplay.includes(i0j)){
+                            if(instrumentsettings[idx].playonce){
+                                if (specialinc!==0){
                                     continue;
                                 }
                             }
                         }
-                        for (var i1j = idxp; i1j < val.notes.length; i1j++) {
-                            var val1 = val.notes[i1j];
-                            
                             sustain = val1.sustain;
                             specialvar = playmidi2(i0j, i1j, withbar,sustain,idx);
                             currentTrackIdx = specialvar[0];
