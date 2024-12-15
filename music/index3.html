@@ -176,6 +176,7 @@
                     <input id="instrument" placeholder="바꿀 악기 이름">
                     <textarea id="instrumentJSON" placeholder="악기 설정 JSON"></textarea>
                     <button onclick="change_instrument()">악기 종류 바꾸기</button>
+                    <input type="checkbox" id="alwayspianoon" checked><label for="alwayspianoon">피아노는 항상 같이 연주되기</label>
                 </div>
             </div>
             <div class=" guest_profile_wrapper" style="position:absolute;text-align:center;width:100%;">
@@ -1078,7 +1079,52 @@
 
             }
             document.querySelector('.sheet').classList.remove('loading');
-        });});}
+        });});
+        if (document.getElementById("alwayspianoon").checked){
+            Soundfont.instrument(ac, 'acoustic_grand_piano').then(function (instrumentnow) {
+            instrument = instrumentnow;
+            instruments.push(instrument);
+            midi_reader = new MIDIFile();
+
+            loadFile = function () {
+                //Player.stop();
+                var files0 = document.querySelector('#myfile').files;
+                var file = files0[files0.length-1];
+                var reader = new FileReader();
+                if (file) reader.readAsArrayBuffer(file);
+                reader.addEventListener("load", function (event) {
+                    bool1 = 0;
+                    /*Player = new Urobot2011MIDIPlayerJS.Player(function (event) {
+                        playmidi(event);
+                        lesson_mode(event);
+                    });
+                    play();
+                    Player.loadArrayBuffer(reader.result);*/
+
+                    midi_reader.loadSong(event.target.result, false, function (param) {
+                        song = param.parseSong();
+                        var notplayedyet = whetherithasnotplayedornot;
+                        whetherithasnotplayedornot = false;
+                        playmidi0(notplayedyet, 0, currentNoteIdx, []);
+                    });
+                });
+            }
+
+            loadDataUri = function (dataUri) {
+                bool1 = 0;
+                Player = new Urobot2011MIDIPlayerJS.Player(function (event) {
+                    playmidi(event);
+                    play();
+                });
+
+                Player.loadDataUri(dataUri);
+
+
+            }
+            document.querySelector('.sheet').classList.remove('loading');
+        });
+                          }
+        }
         change_instrument();
         function setBG(link) {
             if (link === false) {
