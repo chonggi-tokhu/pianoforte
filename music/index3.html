@@ -1020,10 +1020,19 @@
         }
         change_instrument = ()=>{
             instruments=[];
+            var instrumentnames=instrumentfunc().split(',');
             instrumentsettings=[];
             resetvars();
             instrumentsettings=document.getElementById("instrumentJSON").value?JSON.parse(document.getElementById("instrumentJSON").value):[];
-            instrumentfunc().split(',').forEach((val)=>{
+            if (instrumentsettings instanceof Array && instrumentsettings.length>0){
+                instrumentnames=[];
+                instrumentsettings.forEach((val,idx,arr)=>{
+                    if (val){
+                            instrumentnames.push(val.name);
+                    }
+                });
+            }
+            instrumentnames.forEach((val)=>{
             Soundfont.instrument(ac, val).then(function (instrumentnow) {
             instrument = instrumentnow;
             instruments.push(instrument);
