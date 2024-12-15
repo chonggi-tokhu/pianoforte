@@ -61,6 +61,7 @@
                         );
                         p.url = url;
                         p.name = name;
+                        console.log(player);
                         return p;
                     });
                 }
