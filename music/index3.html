@@ -828,7 +828,7 @@
               var instrument0 = instruments[instrumentid];
                 console.log(thisnote.when * 1000 * (_1Minute / _PIANOTEMPO));
                 window.setTimeout(function () {
-                    var newplaying = instrument0.play(pitchnumbers[thisnote.pitch], 0, {sustain: (sustainparam) ? (instnames[instrumentid]==="acoustic_grand_piano")?14:(instnames[instrumentid]==="light_yagami")?2:8 : 0.9});
+                    var newplaying = instrument0.play(pitchnumbers[thisnote.pitch], 0, {sustain: (sustainparam) ? (instnames[instrumentid]==="acoustic_grand_piano")?14:(instnames[instrumentid]==="light_yagami")?3.25:8 : 0.9});
                     bool2 = false;
                     currKeys2[pitchnumbers[thisnote.pitch]] = newplaying.id;
                     get_key_el(pitchnumbers[thisnote.pitch]).classList.add("highlight");
