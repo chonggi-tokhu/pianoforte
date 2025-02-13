@@ -529,6 +529,7 @@
             108: 'B7',
             109: 'C8',
         }
+        var instnames = [];
         var pedal = 0;
         var forchaco = document.getElementById("chaco");
         var guest_profile = document.getElementById("guest_profile");
@@ -827,7 +828,7 @@
               var instrument0 = instruments[instrumentid];
                 console.log(thisnote.when * 1000 * (_1Minute / _PIANOTEMPO));
                 window.setTimeout(function () {
-                    var newplaying = instrument0.play(pitchnumbers[thisnote.pitch], 0, {sustain: (sustainparam) ? 8 : 0.9});
+                    var newplaying = instrument0.play(pitchnumbers[thisnote.pitch], 0, {sustain: (sustainparam) ? (instnames[instrumentid]==="acoustic_grand_piano")?14:8 : 0.9});
                     bool2 = false;
                     currKeys2[pitchnumbers[thisnote.pitch]] = newplaying.id;
                     get_key_el(pitchnumbers[thisnote.pitch]).classList.add("highlight");
@@ -1038,9 +1039,13 @@
                 });
             }
             instrumentnames.forEach((val)=>{
+                if (val==="acoustic_grand_piano"){
+                    
+                }
             Soundfont.instrument(ac, val).then(function (instrumentnow) {
             instrument = instrumentnow;
             instruments.push(instrument);
+                instnames.push(val);
             midi_reader = new MIDIFile();
 
             loadFile = function () {
