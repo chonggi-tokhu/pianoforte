@@ -72,7 +72,7 @@
                     format = format === "ogg" ? format : "mp3";
                     sf = sf === "FluidR3_GM" ? sf : "MusyngKite";
                     return (
-                        "https://gleitz.github.io/midi-js-soundfonts/" +
+                        "https://chonggi-tokhu.github.io/midi-js-soundfonts/" +
                         sf +
                         "/" +
                         name +
