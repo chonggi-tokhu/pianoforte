@@ -75,7 +75,7 @@
                         (name.startsWith("bakayaroid-") ? "https://chonggi-tokhu.github.io/bakayaroid/" : "https://chonggi-tokhu.github.io/midi-js-soundfonts/") +
                         sf +
                         "/" +
-                        (name.startsWith("bakayaroid-")?name.replace("bakayaroid-",""):name) +
+                        (name.startsWith("bakayaroid-") ? name.replace("bakayaroid-","") : name) +
                         "-" +
                         format +
                         ".js"
