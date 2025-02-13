@@ -72,10 +72,10 @@
                     format = format === "ogg" ? format : "mp3";
                     sf = sf === "FluidR3_GM" ? sf : "MusyngKite";
                     return (
-                        "https://chonggi-tokhu.github.io/midi-js-soundfonts/" +
+                        (!name.startsWith("bakayaroid-") ? "https://chonggi-tokhu.github.io/midi-js-soundfonts/" : "https://chonggi-tokhu.github.io/bakayaroid/") +
                         sf +
                         "/" +
-                        name +
+                        (name.startsWith("bakayaroid-")?name.replace("bakayaroid-",""):name) +
                         "-" +
                         format +
                         ".js"
